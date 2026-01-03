@@ -16,7 +16,9 @@ export default function Footer(): JSX.Element {
         Wassalamu&apos;alaikum Warahmatullahi Wabarakatuh
       </p>
 
-      <p className="mt-6 font-semibold">Keluarga Besar Azhari & Nisa</p>
+      <p className="mt-6 font-semibold">
+        Keluarga Besar Risky Santoso & Anisa Putri Wardani
+      </p>
     </footer>
   );
 }
