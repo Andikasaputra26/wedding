@@ -16,18 +16,14 @@ export default function FloatingFlowers(): JSX.Element {
       petal.innerText = petals[Math.floor(Math.random() * petals.length)];
       petal.className = "petal";
 
-      // random horizontal start
       petal.style.left = Math.random() * 100 + "vw";
 
-      // random size
       const size = 18 + Math.random() * 26;
       petal.style.fontSize = size + "px";
 
-      // random fall duration
       const duration = 10 + Math.random() * 10;
       petal.style.animationDuration = duration + "s";
 
-      // random horizontal drift
       petal.style.setProperty("--drift", `${Math.random() * 100 - 50}px`);
 
       container.appendChild(petal);
@@ -35,7 +31,6 @@ export default function FloatingFlowers(): JSX.Element {
       setTimeout(() => petal.remove(), duration * 1000);
     };
 
-    // batch awal
     for (let i = 0; i < 6; i++) {
       setTimeout(createPetal, i * 300);
     }

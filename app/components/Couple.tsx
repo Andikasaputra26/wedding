@@ -15,7 +15,7 @@ export default function Couple() {
             />
             <div className="animate-item absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-900/70 via-slate-900/30 to-transparent p-10 text-center text-slate-100">
               <h2 className="text-4xl md:text-5xl font-semibold mb-3">
-                Azhari & Nisa
+                Risky Santoso & Nisa Wardani
               </h2>
               <p className="opacity-80">
                 Perjalanan cinta kami dimulai dari sini

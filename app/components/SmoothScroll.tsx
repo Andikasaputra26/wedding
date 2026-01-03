@@ -11,7 +11,6 @@ export default function SmoothScroll(): null {
       smoothWheel: true,
     });
 
-    // RAF loop
     function raf(time: number) {
       lenis.raf(time);
       requestAnimationFrame(raf);
@@ -19,7 +18,6 @@ export default function SmoothScroll(): null {
 
     requestAnimationFrame(raf);
 
-    // Sync Lenis with GSAP (SAFE)
     gsap.ticker.add((time) => {
       lenis.raf(time * 1000);
     });

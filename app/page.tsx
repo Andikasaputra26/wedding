@@ -20,20 +20,16 @@ export default function Home(): JSX.Element {
 
   return (
     <>
-      {/* Smooth scroll controller (GLOBAL) */}
       <SmoothScroll />
 
-      {/* COVER (WAJIB Suspense) */}
       {!opened && (
         <Suspense fallback={null}>
           <Cover onOpen={() => setOpened(true)} />
         </Suspense>
       )}
 
-      {/* Floating flowers (aktif setelah buka undangan) */}
       {opened && <FloatingFlowers />}
 
-      {/* MAIN CONTENT */}
       <main
         className={`transition-all duration-[1500ms] ease-out ${
           opened ? "opacity-100 translate-y-0" : "opacity-0 translate-y-24"

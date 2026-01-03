@@ -13,14 +13,12 @@ export default function Hero(): JSX.Element {
         defaults: { ease: "power3.out" },
       });
 
-      // Flower stem grow
       tl.from(".flower-stem", {
         scaleY: 0,
         transformOrigin: "bottom center",
         duration: 1,
       })
 
-        // Flower bloom
         .from(
           ".flower-bloom",
           {
@@ -31,7 +29,6 @@ export default function Hero(): JSX.Element {
           "-=0.4"
         )
 
-        // Hero text
         .from(
           ".hero-item",
           {
@@ -52,26 +49,23 @@ export default function Hero(): JSX.Element {
       ref={ref}
       className="relative min-h-screen flex items-center justify-center text-center bg-slate-950 text-slate-100 px-6 overflow-hidden"
     >
-      {/* LEFT FLOWER */}
       <div className="absolute left-8 bottom-0 flex flex-col items-center">
         <span className="flower-bloom text-slate-200 text-xl mb-2">❀</span>
         <span className="flower-stem w-[1px] h-40 bg-slate-400/40" />
       </div>
 
-      {/* RIGHT FLOWER */}
       <div className="absolute right-8 bottom-0 flex flex-col items-center">
         <span className="flower-bloom text-slate-200 text-xl mb-2">❀</span>
         <span className="flower-stem w-[1px] h-40 bg-slate-400/40" />
       </div>
 
-      {/* CONTENT */}
       <div className="relative z-10">
         <p className="hero-item tracking-[3px] text-sm opacity-70 mb-4">
           WE ARE GETTING MARRIED
         </p>
 
         <h1 className="hero-item text-5xl md:text-7xl font-bold mb-6">
-          Azhari & Nisa
+          Risky Santoso & Nisa Wardani
         </h1>
 
         <div className="hero-item w-20 h-[1px] bg-slate-400/40 mx-auto mb-6" />

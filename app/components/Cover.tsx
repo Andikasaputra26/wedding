@@ -19,7 +19,7 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
         </p>
 
         <h1 className="text-4xl md:text-5xl font-semibold my-5 tracking-wide">
-          Azhari & Nisa
+          Risky Santoso & Nisa Wardani
         </h1>
 
         {/* Photo */}
