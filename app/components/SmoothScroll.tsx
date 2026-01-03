@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import Lenis from "@studio-freight/lenis";
+import Lenis from "lenis";
 import { gsap } from "../lib/gsap";
 
 export default function SmoothScroll(): null {
@@ -9,7 +9,6 @@ export default function SmoothScroll(): null {
     const lenis = new Lenis({
       duration: 1.2,
       smoothWheel: true,
-      smoothTouch: false,
     });
 
     // RAF loop
@@ -20,7 +19,7 @@ export default function SmoothScroll(): null {
 
     requestAnimationFrame(raf);
 
-    // Sync Lenis with GSAP (AMAN TANPA ScrollTrigger.update)
+    // Sync Lenis with GSAP (SAFE)
     gsap.ticker.add((time) => {
       lenis.raf(time * 1000);
     });
