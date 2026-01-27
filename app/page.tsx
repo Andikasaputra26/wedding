@@ -5,7 +5,7 @@ import { JSX, Suspense, useState } from "react";
 import Cover from "./components/Cover";
 import Hero from "./components/Hero";
 import Couple from "./components/OurSpecialDay";
-import Profile from "./components/Profile";
+import Profile from "./components/Profile"; 
 import Event from "./components/Event";
 import Gallery from "./components/Gallery";
 import Location from "./components/Location";

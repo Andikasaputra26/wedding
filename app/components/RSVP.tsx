@@ -3,6 +3,8 @@
 import { JSX, useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db } from "../lib/firebase";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -10,14 +12,19 @@ export default function RSVP(): JSX.Element {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // state field
+  const [name, setName] = useState("");
+  const [message, setMessage] = useState("");
+  const [attendance, setAttendance] = useState("");
 
   useEffect(() => {
     if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
-      // Entrance animations
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -33,58 +40,56 @@ export default function RSVP(): JSX.Element {
         duration: 1,
         ease: "power3.out",
       })
-        .from(
-          ".ornament-line",
-          {
-            scaleX: 0,
-            opacity: 0,
-            duration: 0.8,
-            stagger: 0.1,
-          },
-          "-=0.6"
-        )
-        .from(
-          formRef.current,
-          {
-            y: 40,
-            opacity: 0,
-            scale: 0.95,
-            duration: 1,
-            ease: "power3.out",
-          },
-          "-=0.4"
-        )
-        .from(
-          ".form-field",
-          {
-            y: 20,
-            opacity: 0,
-            duration: 0.6,
-            stagger: 0.1,
-          },
-          "-=0.6"
-        );
+        .from(".ornament-line", {
+          scaleX: 0,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.1,
+        }, "-=0.6")
+        .from(formRef.current, {
+          y: 40,
+          opacity: 0,
+          scale: 0.95,
+          duration: 1,
+          ease: "power3.out",
+        }, "-=0.4")
+        .from(".form-field", {
+          y: 20,
+          opacity: 0,
+          duration: 0.6,
+          stagger: 0.1,
+        }, "-=0.6");
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate submission
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      await addDoc(collection(db, "join_message"), {
+        name,
+        message,
+        attendance,
+        date: new Date().toISOString(),
+        createdAt: serverTimestamp(),
+      });
+
       setShowSuccess(true);
+      setName("");
+      setMessage("");
+      setAttendance("");
 
-      // Hide success message after 3 seconds
-      setTimeout(() => {
-        setShowSuccess(false);
-      }, 3000);
-    }, 1500);
+      setTimeout(() => setShowSuccess(false), 3000);
+    } catch (err) {
+      console.error(err);
+      alert("Gagal mengirim data.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
-
   return (
     <section
       ref={sectionRef}
@@ -164,6 +169,8 @@ export default function RSVP(): JSX.Element {
               <input
                 type="text"
                 required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 className="w-full border-2 border-amber-200/60 focus:border-amber-400 rounded-2xl sm:rounded-3xl px-5 sm:px-6 py-3 sm:py-4 text-sm sm:text-base bg-white/80 backdrop-blur-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber-400/20 focus:shadow-lg text-slate-900 placeholder:text-slate-400"
                 placeholder="Masukkan nama lengkap Anda"
                 style={{ fontFamily: "'Crimson Text', serif" }}
@@ -187,6 +194,8 @@ export default function RSVP(): JSX.Element {
               <textarea
                 rows={5}
                 required
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
                 className="w-full border-2 border-amber-200/60 focus:border-amber-400 rounded-2xl sm:rounded-3xl px-5 sm:px-6 py-3 sm:py-4 text-sm sm:text-base bg-white/80 backdrop-blur-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber-400/20 focus:shadow-lg resize-none text-slate-900 placeholder:text-slate-400"
                 placeholder="Tulis ucapan dan doa terbaik untuk kami..."
                 style={{ fontFamily: "'Crimson Text', serif" }}
@@ -209,6 +218,8 @@ export default function RSVP(): JSX.Element {
               <div className="relative">
                 <select
                   required
+                  value={attendance}
+                  onChange={(e) => setAttendance(e.target.value)}
                   className="w-full appearance-none border-2 border-amber-200/60 focus:border-amber-400 rounded-2xl sm:rounded-3xl px-5 sm:px-6 py-3 sm:py-4 pr-12 text-sm sm:text-base bg-white/80 backdrop-blur-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber-400/20 focus:shadow-lg text-slate-900 cursor-pointer"
                   style={{ fontFamily: "'Crimson Text', serif" }}
                 >

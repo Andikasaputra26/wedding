@@ -21,6 +21,8 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const guestNameRef = useRef<HTMLHeadingElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const decorLineTopRef = useRef<HTMLDivElement>(null);
+  const decorLineBottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -31,191 +33,316 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
   useEffect(() => {
     if (!mounted) return;
 
-    // Initial animation sequence
+    // Premium entrance animation sequence
     const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-    tl.from(cardRef.current, {
-      scale: 0.85,
-      opacity: 0,
-      duration: 1.2,
-      ease: "power4.out",
-    })
-      .from(
+    // Card entrance with elegant reveal
+    tl.fromTo(
+      cardRef.current,
+      {
+        scale: 0.7,
+        opacity: 0,
+        y: 50,
+        rotationX: -15,
+      },
+      {
+        scale: 1,
+        opacity: 1,
+        y: 0,
+        rotationX: 0,
+        duration: 1.4,
+        ease: "power4.out",
+      }
+    )
+      // Top ornament with stagger effect
+      .fromTo(
         ornamentTopRef.current,
         {
-          y: -40,
+          y: -60,
           opacity: 0,
-          scale: 0.8,
-          rotation: -45,
-          duration: 0.8,
+          scale: 0.5,
+          rotation: -180,
         },
-        "-=0.6"
-      )
-      .from(
-        ornamentBottomRef.current,
         {
-          y: 40,
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          rotation: 0,
+          duration: 1,
+          ease: "elastic.out(1, 0.6)",
+        },
+        "-=1"
+      )
+      // Top decorative line
+      .fromTo(
+        decorLineTopRef.current,
+        {
+          scaleX: 0,
           opacity: 0,
-          scale: 0.8,
-          rotation: 45,
+        },
+        {
+          scaleX: 1,
+          opacity: 1,
           duration: 0.8,
+          ease: "power2.out",
+        },
+        "-=0.7"
+      )
+      // Title with letter reveal effect
+      .fromTo(
+        titleRef.current,
+        {
+          y: 30,
+          opacity: 0,
+          scale: 0.95,
+        },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.9,
+          ease: "power3.out",
+        },
+        "-=0.5"
+      )
+      // Photo with 3D flip effect
+      .fromTo(
+        photoRef.current,
+        {
+          scale: 0.8,
+          opacity: 0,
+          rotationY: 90,
+          z: -100,
+        },
+        {
+          scale: 1,
+          opacity: 1,
+          rotationY: 0,
+          z: 0,
+          duration: 1.2,
+          ease: "power4.out",
         },
         "-=0.8"
       )
-      .from(
-        titleRef.current,
+      // Guest name with elegant fade
+      .fromTo(
+        guestNameRef.current,
         {
           y: 25,
           opacity: 0,
-          duration: 0.8,
         },
-        "-=0.4"
-      )
-      .from(
-        photoRef.current,
         {
-          scale: 0.9,
-          opacity: 0,
-          rotateY: 12,
-          duration: 1,
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power2.out",
         },
         "-=0.6"
       )
-      .from(
-        guestNameRef.current,
+      // Bottom ornament
+      .fromTo(
+        ornamentBottomRef.current,
         {
-          y: 20,
+          y: 60,
           opacity: 0,
-          duration: 0.6,
+          scale: 0.5,
+          rotation: 180,
         },
-        "-=0.4"
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          rotation: 0,
+          duration: 1,
+          ease: "elastic.out(1, 0.6)",
+        },
+        "-=0.8"
       )
-      .from(
+      // Bottom decorative line
+      .fromTo(
+        decorLineBottomRef.current,
+        {
+          scaleX: 0,
+          opacity: 0,
+        },
+        {
+          scaleX: 1,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power2.out",
+        },
+        "-=0.9"
+      )
+      // Button with bounce effect
+      .fromTo(
         buttonRef.current,
         {
-          scale: 0.9,
+          scale: 0.8,
           opacity: 0,
-          duration: 0.6,
+          y: 20,
         },
-        "-=0.2"
+        {
+          scale: 1,
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: "back.out(1.4)",
+        },
+        "-=0.4"
       );
 
-    // Floating animation for photo
+    // Premium floating animation for photo
     gsap.to(photoRef.current, {
-      y: -8,
-      duration: 2.5,
+      y: -10,
+      duration: 3,
       repeat: -1,
       yoyo: true,
       ease: "sine.inOut",
     });
 
-    // Subtle rotation animation for ornaments
+    // Subtle scale pulse for photo
+    gsap.to(photoRef.current, {
+      scale: 1.02,
+      duration: 4,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
+    });
+
+    // Elegant rotation for ornaments
     gsap.to(ornamentTopRef.current, {
       rotate: 360,
-      duration: 40,
+      duration: 50,
       repeat: -1,
       ease: "none",
     });
 
     gsap.to(ornamentBottomRef.current, {
       rotate: -360,
-      duration: 50,
+      duration: 60,
       repeat: -1,
       ease: "none",
+    });
+
+    // Shimmer effect for button
+    gsap.to(buttonRef.current, {
+      boxShadow: "0 10px 40px -10px rgba(251, 191, 36, 0.6)",
+      duration: 2,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
     });
   }, [mounted]);
 
   const handleOpenClick = () => {
-    // Animate out before calling onOpen
+    // Premium exit animation
     const tl = gsap.timeline({
       onComplete: () => onOpen(),
     });
 
+    // Button press effect
     tl.to(buttonRef.current, {
-      scale: 0.95,
+      scale: 0.92,
       duration: 0.1,
+      ease: "power2.in",
     })
       .to(buttonRef.current, {
-        scale: 1.05,
-        duration: 0.2,
+        scale: 1.08,
+        duration: 0.15,
+        ease: "power2.out",
       })
+      // Card zoom and fade out
       .to(
         cardRef.current,
         {
-          scale: 1.1,
+          scale: 1.15,
           opacity: 0,
-          duration: 0.6,
-          ease: "power2.in",
+          rotationY: 15,
+          duration: 0.7,
+          ease: "power3.in",
         },
         "-=0.1"
       )
+      // Container fade
       .to(
         containerRef.current,
         {
           opacity: 0,
-          duration: 0.4,
+          duration: 0.5,
+          ease: "power2.in",
         },
-        "-=0.3"
+        "-=0.5"
       );
   };
 
   return (
     <section
       ref={containerRef}
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden px-4 sm:px-6"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden px-4"
     >
-      {/* Background with enhanced effects */}
+      {/* Enhanced Background */}
       <div className="absolute inset-0">
         <div
-          className="absolute inset-0 bg-cover bg-center scale-105 sm:scale-110"
+          className="absolute inset-0 bg-cover bg-center scale-110"
           style={{
             backgroundImage:
               "url('https://images.unsplash.com/photo-1519741497674-611481863552?w=1920&q=80')",
           }}
         />
-        {/* Multi-layered overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/85 via-slate-900/75 to-slate-950/85" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20" />
+        {/* Multi-layered gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/90 via-slate-900/85 to-slate-950/90" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30" />
         
-        {/* Animated gradient orbs */}
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-amber-500/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-rose-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: "1.5s" }} />
+        {/* Premium animated gradient orbs */}
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 sm:w-80 sm:h-80 bg-amber-500/15 rounded-full blur-[140px] animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 sm:w-80 sm:h-80 bg-rose-500/15 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: "2s" }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-500/10 rounded-full blur-[160px] animate-pulse" style={{ animationDelay: "1s" }} />
       </div>
 
-      {/* Main Card */}
+      {/* Main Card - Smaller and better responsive */}
       <div
         ref={cardRef}
-        className="relative text-center text-white backdrop-blur-2xl bg-gradient-to-br from-white/10 via-white/5 to-white/10 border border-white/20 rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[3rem] p-8 sm:p-10 md:p-12 lg:p-14 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.7)] w-full max-w-[90vw] sm:max-w-md md:max-w-lg"
+        className="relative text-center text-white backdrop-blur-2xl bg-gradient-to-br from-white/12 via-white/8 to-white/12 border border-white/25 rounded-[2rem] sm:rounded-[2.5rem] p-5 sm:p-6 md:p-8 shadow-[0_50px_120px_-25px_rgba(0,0,0,0.8)] w-full max-w-[320px] sm:max-w-[340px] md:max-w-[380px]"
+        style={{
+          perspective: "1000px",
+          transformStyle: "preserve-3d",
+        }}
       >
-        {/* Top Ornament */}
+        {/* Enhanced Top Ornament */}
         <div
           ref={ornamentTopRef}
-          className="absolute -top-6 sm:-top-8 left-1/2 -translate-x-1/2 w-16 h-16 sm:w-20 sm:h-20 opacity-60"
+          className="absolute -top-6 sm:-top-7 left-1/2 -translate-x-1/2 w-16 h-16 sm:w-20 sm:h-20 opacity-70"
         >
-          <div className="w-full h-full border-2 border-amber-300/60 rounded-full" />
-          <div className="absolute inset-2 border-2 border-amber-400/40 rounded-full" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-amber-300/80 rounded-full shadow-lg" />
+          <div className="w-full h-full border-[2.5px] border-amber-300/70 rounded-full shadow-lg" />
+          <div className="absolute inset-2 border-[2px] border-amber-400/50 rounded-full" />
+          <div className="absolute inset-3.5 border-[1px] border-amber-300/30 rounded-full" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-amber-300 rounded-full shadow-xl" />
+          {/* Glow effect */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 bg-amber-300/50 rounded-full blur-md" />
         </div>
 
-        {/* Bottom Ornament */}
+        {/* Enhanced Bottom Ornament */}
         <div
           ref={ornamentBottomRef}
-          className="absolute -bottom-6 sm:-bottom-8 left-1/2 -translate-x-1/2 w-16 h-16 sm:w-20 sm:h-20 opacity-60"
+          className="absolute -bottom-6 sm:-bottom-7 left-1/2 -translate-x-1/2 w-16 h-16 sm:w-20 sm:h-20 opacity-70"
         >
-          <div className="w-full h-full border-2 border-rose-300/60 rounded-full" />
-          <div className="absolute inset-2 border-2 border-rose-400/40 rounded-full" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-rose-300/80 rounded-full shadow-lg" />
+          <div className="w-full h-full border-[2.5px] border-rose-300/70 rounded-full shadow-lg" />
+          <div className="absolute inset-2 border-[2px] border-rose-400/50 rounded-full" />
+          <div className="absolute inset-3.5 border-[1px] border-rose-300/30 rounded-full" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-rose-300 rounded-full shadow-xl" />
+          {/* Glow effect */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 bg-rose-300/50 rounded-full blur-md" />
         </div>
 
         {/* Decorative top line */}
-        <div className="flex items-center justify-center gap-2 sm:gap-3 mb-6 sm:mb-8">
-          <div className="h-[1.5px] w-10 sm:w-12 bg-gradient-to-r from-transparent via-amber-300/50 to-amber-400/50 rounded-full" />
-          <div className="text-amber-300/70 text-lg sm:text-xl" style={{ fontFamily: "'Playfair Display', serif" }}>✦</div>
-          <div className="h-[1.5px] w-10 sm:w-12 bg-gradient-to-l from-transparent via-amber-300/50 to-amber-400/50 rounded-full" />
+        <div ref={decorLineTopRef} className="flex items-center justify-center gap-2 sm:gap-3 mb-4">
+          <div className="h-[1.5px] w-10 sm:w-12 bg-gradient-to-r from-transparent via-amber-300/60 to-amber-400/60 rounded-full shadow-sm" />
+          <div className="text-amber-300/80 text-lg sm:text-xl" style={{ fontFamily: "'Playfair Display', serif" }}>✦</div>
+          <div className="h-[1.5px] w-10 sm:w-12 bg-gradient-to-l from-transparent via-amber-300/60 to-amber-400/60 rounded-full shadow-sm" />
         </div>
 
         <p
-          className="tracking-[0.2em] sm:tracking-[0.25em] text-[10px] sm:text-xs uppercase text-amber-200/70 font-light mb-4 sm:mb-6"
+          className="tracking-[0.2em] sm:tracking-[0.25em] text-[10px] sm:text-[11px] uppercase text-amber-200/80 font-light mb-3"
           style={{ fontFamily: "'Cormorant Garamond', serif" }}
         >
           The Wedding Of
@@ -223,74 +350,79 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
 
         <h1
           ref={titleRef}
-          className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 sm:mb-8 tracking-wide px-2"
+          className="text-2xl sm:text-3xl md:text-[2rem] font-bold mb-4 sm:mb-5 tracking-wide px-2"
           style={{ fontFamily: "'Playfair Display', serif" }}
         >
-          <span className="bg-gradient-to-br from-white via-amber-50 to-amber-100 bg-clip-text text-transparent drop-shadow-2xl">
+          <span className="bg-gradient-to-br from-white via-amber-50 to-amber-100 bg-clip-text text-transparent drop-shadow-[0_2px_10px_rgba(251,191,36,0.3)]">
             Risky Santoso
           </span>
-          <span className="block text-xl sm:text-2xl md:text-3xl my-2 sm:my-3 text-amber-200/90">&</span>
-          <span className="bg-gradient-to-br from-white via-rose-50 to-rose-100 bg-clip-text text-transparent drop-shadow-2xl">
+          <span className="block text-xl sm:text-2xl my-1.5 sm:my-2 text-amber-200/90">&</span>
+          <span className="bg-gradient-to-br from-white via-rose-50 to-rose-100 bg-clip-text text-transparent drop-shadow-[0_2px_10px_rgba(251,113,133,0.3)]">
             Nisa Wardani
           </span>
         </h1>
 
-        {/* Photo frame with enhanced styling */}
+        {/* Enhanced Photo frame - Smaller */}
         <div
           ref={photoRef}
-          className="relative mx-auto my-8 sm:my-10 w-44 h-56 sm:w-52 sm:h-64 md:w-60 md:h-80"
+          className="relative mx-auto my-5 sm:my-6 w-32 h-40 sm:w-36 sm:h-44"
         >
-          {/* Glow effect */}
-          <div className="absolute -inset-2 bg-gradient-to-br from-amber-300/30 via-rose-300/20 to-amber-300/30 rounded-[140px_140px_50px_50px] sm:rounded-[160px_160px_60px_60px] blur-xl" />
+          {/* Enhanced glow effect */}
+          <div className="absolute -inset-2.5 bg-gradient-to-br from-amber-300/40 via-rose-300/30 to-amber-300/40 rounded-[100px_100px_35px_35px] sm:rounded-[110px_110px_40px_40px] blur-2xl opacity-80" />
           
           {/* Photo container */}
-          <div className="relative w-full h-full rounded-[130px_130px_45px_45px] sm:rounded-[150px_150px_55px_55px] overflow-hidden border-[3px] border-white/30 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]">
+          <div className="relative w-full h-full rounded-[90px_90px_30px_30px] sm:rounded-[100px_100px_35px_35px] overflow-hidden border-[3px] border-white/40 shadow-[0_25px_70px_-20px_rgba(0,0,0,0.7)]">
             <img
               src="https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=600&q=80"
               className="w-full h-full object-cover"
               alt="Couple"
             />
-            {/* Photo overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/5" />
+            {/* Photo overlay with vignette */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-white/10" />
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-300/5 via-transparent to-rose-300/5" />
           </div>
 
-          {/* Decorative corners */}
-          <div className="absolute -top-2 sm:-top-3 -left-2 sm:-left-3 w-6 h-6 sm:w-8 sm:h-8 border-t-2 border-l-2 border-amber-300/50 rounded-tl-2xl" />
-          <div className="absolute -top-2 sm:-top-3 -right-2 sm:-right-3 w-6 h-6 sm:w-8 sm:h-8 border-t-2 border-r-2 border-amber-300/50 rounded-tr-2xl" />
+          {/* Enhanced decorative corners */}
+          <div className="absolute -top-2 -left-2 w-6 h-6 sm:w-7 sm:h-7 border-t-[2.5px] border-l-[2.5px] border-amber-300/60 rounded-tl-2xl shadow-lg" />
+          <div className="absolute -top-2 -right-2 w-6 h-6 sm:w-7 sm:h-7 border-t-[2.5px] border-r-[2.5px] border-amber-300/60 rounded-tr-2xl shadow-lg" />
         </div>
 
         {/* Guest Info */}
-        <div className="space-y-3 sm:space-y-4 mb-8 sm:mb-10">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="h-[1px] w-8 sm:w-10 bg-gradient-to-r from-transparent to-white/30" />
-            <p className="text-xs sm:text-sm text-white/70 font-light" style={{ fontFamily: "'Crimson Text', serif" }}>
+        <div className="space-y-2 mb-5 sm:mb-6">
+          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2">
+            <div className="h-[1.5px] w-8 sm:w-10 bg-gradient-to-r from-transparent to-white/40 rounded-full" />
+            <p className="text-[11px] sm:text-xs text-white/80 font-light tracking-wide" style={{ fontFamily: "'Crimson Text', serif" }}>
               Kepada Yth
             </p>
-            <div className="h-[1px] w-8 sm:w-10 bg-gradient-to-l from-transparent to-white/30" />
+            <div className="h-[1.5px] w-8 sm:w-10 bg-gradient-to-l from-transparent to-white/40 rounded-full" />
           </div>
           
           <h2
             ref={guestNameRef}
-            className="text-xl sm:text-2xl md:text-3xl font-semibold tracking-wide text-amber-100 drop-shadow-lg px-4 leading-snug"
+            className="text-lg sm:text-xl md:text-[1.4rem] font-semibold tracking-wide text-amber-100 drop-shadow-lg px-3 leading-snug"
             style={{ fontFamily: "'Playfair Display', serif" }}
           >
             {guest}
           </h2>
           
-          <p className="text-xs sm:text-sm text-white/70 font-light italic" style={{ fontFamily: "'Crimson Text', serif" }}>
+          <p className="text-[11px] sm:text-xs text-white/75 font-light italic tracking-wide" style={{ fontFamily: "'Crimson Text', serif" }}>
             Di Tempat
           </p>
         </div>
 
-        {/* Button with enhanced styling */}
+        {/* Enhanced Button - Smaller */}
         <button
           ref={buttonRef}
           onClick={handleOpenClick}
-          className="relative w-full sm:w-auto px-10 sm:px-12 py-4 sm:py-5 rounded-full font-bold text-base sm:text-lg tracking-wide bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 text-slate-900 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95"
+          className="relative w-full px-8 sm:px-10 py-3 sm:py-3.5 rounded-full font-bold text-sm sm:text-base tracking-wide bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-900 shadow-[0_15px_40px_-10px_rgba(251,191,36,0.5)] hover:shadow-[0_20px_50px_-10px_rgba(251,191,36,0.6)] transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden group"
         >
-          Buka Undangan
+          {/* Shimmer effect */}
+          <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+          
+          <span className="relative z-10">Buka Undangan</span>
+          
           <svg
-            className="inline-block w-5 h-5 sm:w-6 sm:h-6 ml-2 transition-transform duration-300"
+            className="inline-block w-4 h-4 sm:w-5 sm:h-5 ml-1.5 transition-transform duration-300 group-hover:translate-x-1 relative z-10"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -305,10 +437,10 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
         </button>
 
         {/* Bottom decorative line */}
-        <div className="flex items-center justify-center gap-2 sm:gap-3 mt-8 sm:mt-10">
-          <div className="h-[1.5px] w-10 sm:w-12 bg-gradient-to-r from-transparent via-rose-300/50 to-rose-400/50 rounded-full" />
-          <div className="text-rose-300/70 text-lg sm:text-xl" style={{ fontFamily: "'Playfair Display', serif" }}>✦</div>
-          <div className="h-[1.5px] w-10 sm:w-12 bg-gradient-to-l from-transparent via-rose-300/50 to-rose-400/50 rounded-full" />
+        <div ref={decorLineBottomRef} className="flex items-center justify-center gap-2 sm:gap-3 mt-5 sm:mt-6">
+          <div className="h-[1.5px] w-10 sm:w-12 bg-gradient-to-r from-transparent via-rose-300/60 to-rose-400/60 rounded-full shadow-sm" />
+          <div className="text-rose-300/80 text-lg sm:text-xl" style={{ fontFamily: "'Playfair Display', serif" }}>✦</div>
+          <div className="h-[1.5px] w-10 sm:w-12 bg-gradient-to-l from-transparent via-rose-300/60 to-rose-400/60 rounded-full shadow-sm" />
         </div>
       </div>
     </section>
