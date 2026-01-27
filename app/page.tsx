@@ -4,7 +4,7 @@ import { JSX, Suspense, useState } from "react";
 
 import Cover from "./components/Cover";
 import Hero from "./components/Hero";
-import Couple from "./components/Couple";
+import Couple from "./components/OurSpecialDay";
 import Profile from "./components/Profile";
 import Event from "./components/Event";
 import Gallery from "./components/Gallery";
@@ -28,7 +28,7 @@ export default function Home(): JSX.Element {
         </Suspense>
       )}
 
-      {opened && <FloatingFlowers />}
+      {/* {opened && <FloatingFlowers />} */}
 
       <main
         className={`transition-all duration-[1500ms] ease-out ${
