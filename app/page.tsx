@@ -40,7 +40,7 @@ export default function Home(): JSX.Element {
         <Profile />
         <Event />
         <Gallery />
-        <Location />
+        {/* <Location /> */}
         <RSVP />
         <Footer />
       </main>

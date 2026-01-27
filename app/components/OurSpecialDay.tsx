@@ -120,7 +120,7 @@ export default function OurSpecialDay() {
       ref={containerRef}
       className="relative min-h-screen w-full flex items-center justify-center px-4 sm:px-6 md:px-8 py-16 sm:py-20 md:py-24 overflow-hidden"
       style={{
-        background: "linear-gradient(135deg, #8B4952 0%, #7A434A 50%, #6B3840 100%)",
+        background: "linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)",
       }}
     >
       {/* Enhanced background effects */}
