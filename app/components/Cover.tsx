@@ -33,10 +33,8 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
   useEffect(() => {
     if (!mounted) return;
 
-    // Premium entrance animation sequence
     const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-    // Card entrance with elegant reveal
     tl.fromTo(
       cardRef.current,
       {
@@ -54,7 +52,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
         ease: "power4.out",
       }
     )
-      // Top ornament with stagger effect
       .fromTo(
         ornamentTopRef.current,
         {
@@ -73,7 +70,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
         },
         "-=1"
       )
-      // Top decorative line
       .fromTo(
         decorLineTopRef.current,
         {
@@ -88,7 +84,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
         },
         "-=0.7"
       )
-      // Title with letter reveal effect
       .fromTo(
         titleRef.current,
         {
@@ -105,7 +100,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
         },
         "-=0.5"
       )
-      // Photo with 3D flip effect
       .fromTo(
         photoRef.current,
         {
@@ -124,7 +118,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
         },
         "-=0.8"
       )
-      // Guest name with elegant fade
       .fromTo(
         guestNameRef.current,
         {
@@ -139,7 +132,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
         },
         "-=0.6"
       )
-      // Bottom ornament
       .fromTo(
         ornamentBottomRef.current,
         {
@@ -158,7 +150,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
         },
         "-=0.8"
       )
-      // Bottom decorative line
       .fromTo(
         decorLineBottomRef.current,
         {
@@ -173,7 +164,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
         },
         "-=0.9"
       )
-      // Button with bounce effect
       .fromTo(
         buttonRef.current,
         {
@@ -191,7 +181,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
         "-=0.4"
       );
 
-    // Premium floating animation for photo
     gsap.to(photoRef.current, {
       y: -10,
       duration: 3,
@@ -200,7 +189,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
       ease: "sine.inOut",
     });
 
-    // Subtle scale pulse for photo
     gsap.to(photoRef.current, {
       scale: 1.02,
       duration: 4,
@@ -209,7 +197,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
       ease: "sine.inOut",
     });
 
-    // Elegant rotation for ornaments
     gsap.to(ornamentTopRef.current, {
       rotate: 360,
       duration: 50,
@@ -224,7 +211,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
       ease: "none",
     });
 
-    // Shimmer effect for button
     gsap.to(buttonRef.current, {
       boxShadow: "0 10px 40px -10px rgba(251, 191, 36, 0.6)",
       duration: 2,
@@ -235,12 +221,10 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
   }, [mounted]);
 
   const handleOpenClick = () => {
-    // Premium exit animation
     const tl = gsap.timeline({
       onComplete: () => onOpen(),
     });
 
-    // Button press effect
     tl.to(buttonRef.current, {
       scale: 0.92,
       duration: 0.1,
@@ -251,7 +235,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
         duration: 0.15,
         ease: "power2.out",
       })
-      // Card zoom and fade out
       .to(
         cardRef.current,
         {
@@ -263,7 +246,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
         },
         "-=0.1"
       )
-      // Container fade
       .to(
         containerRef.current,
         {
@@ -280,7 +262,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
       ref={containerRef}
       className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden px-4"
     >
-      {/* Enhanced Background */}
       <div className="absolute inset-0">
         <div
           className="absolute inset-0 bg-cover bg-center scale-110"
@@ -289,17 +270,14 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
               "url('https://images.unsplash.com/photo-1519741497674-611481863552?w=1920&q=80')",
           }}
         />
-        {/* Multi-layered gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950/90 via-slate-900/85 to-slate-950/90" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30" />
         
-        {/* Premium animated gradient orbs */}
         <div className="absolute top-1/4 left-1/4 w-64 h-64 sm:w-80 sm:h-80 bg-amber-500/15 rounded-full blur-[140px] animate-pulse" />
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 sm:w-80 sm:h-80 bg-rose-500/15 rounded-full blur-[140px] animate-pulse" style={{ animationDelay: "2s" }} />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-500/10 rounded-full blur-[160px] animate-pulse" style={{ animationDelay: "1s" }} />
       </div>
 
-      {/* Main Card - Smaller and better responsive */}
       <div
         ref={cardRef}
         className="relative text-center text-white backdrop-blur-2xl bg-gradient-to-br from-white/12 via-white/8 to-white/12 border border-white/25 rounded-[2rem] sm:rounded-[2.5rem] p-5 sm:p-6 md:p-8 shadow-[0_50px_120px_-25px_rgba(0,0,0,0.8)] w-full max-w-[320px] sm:max-w-[340px] md:max-w-[380px]"
@@ -308,7 +286,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
           transformStyle: "preserve-3d",
         }}
       >
-        {/* Enhanced Top Ornament */}
         <div
           ref={ornamentTopRef}
           className="absolute -top-6 sm:-top-7 left-1/2 -translate-x-1/2 w-16 h-16 sm:w-20 sm:h-20 opacity-70"
@@ -317,11 +294,9 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
           <div className="absolute inset-2 border-[2px] border-amber-400/50 rounded-full" />
           <div className="absolute inset-3.5 border-[1px] border-amber-300/30 rounded-full" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-amber-300 rounded-full shadow-xl" />
-          {/* Glow effect */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 bg-amber-300/50 rounded-full blur-md" />
         </div>
 
-        {/* Enhanced Bottom Ornament */}
         <div
           ref={ornamentBottomRef}
           className="absolute -bottom-6 sm:-bottom-7 left-1/2 -translate-x-1/2 w-16 h-16 sm:w-20 sm:h-20 opacity-70"
@@ -330,11 +305,9 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
           <div className="absolute inset-2 border-[2px] border-rose-400/50 rounded-full" />
           <div className="absolute inset-3.5 border-[1px] border-rose-300/30 rounded-full" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-rose-300 rounded-full shadow-xl" />
-          {/* Glow effect */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 bg-rose-300/50 rounded-full blur-md" />
         </div>
 
-        {/* Decorative top line */}
         <div ref={decorLineTopRef} className="flex items-center justify-center gap-2 sm:gap-3 mb-4">
           <div className="h-[1.5px] w-10 sm:w-12 bg-gradient-to-r from-transparent via-amber-300/60 to-amber-400/60 rounded-full shadow-sm" />
           <div className="text-amber-300/80 text-lg sm:text-xl" style={{ fontFamily: "'Playfair Display', serif" }}>✦</div>
@@ -362,32 +335,26 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
           </span>
         </h1>
 
-        {/* Enhanced Photo frame - Smaller */}
         <div
           ref={photoRef}
           className="relative mx-auto my-5 sm:my-6 w-32 h-40 sm:w-36 sm:h-44"
         >
-          {/* Enhanced glow effect */}
           <div className="absolute -inset-2.5 bg-gradient-to-br from-amber-300/40 via-rose-300/30 to-amber-300/40 rounded-[100px_100px_35px_35px] sm:rounded-[110px_110px_40px_40px] blur-2xl opacity-80" />
           
-          {/* Photo container */}
           <div className="relative w-full h-full rounded-[90px_90px_30px_30px] sm:rounded-[100px_100px_35px_35px] overflow-hidden border-[3px] border-white/40 shadow-[0_25px_70px_-20px_rgba(0,0,0,0.7)]">
             <img
               src="https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=600&q=80"
               className="w-full h-full object-cover"
               alt="Couple"
             />
-            {/* Photo overlay with vignette */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-white/10" />
             <div className="absolute inset-0 bg-gradient-to-br from-amber-300/5 via-transparent to-rose-300/5" />
           </div>
 
-          {/* Enhanced decorative corners */}
           <div className="absolute -top-2 -left-2 w-6 h-6 sm:w-7 sm:h-7 border-t-[2.5px] border-l-[2.5px] border-amber-300/60 rounded-tl-2xl shadow-lg" />
           <div className="absolute -top-2 -right-2 w-6 h-6 sm:w-7 sm:h-7 border-t-[2.5px] border-r-[2.5px] border-amber-300/60 rounded-tr-2xl shadow-lg" />
         </div>
 
-        {/* Guest Info */}
         <div className="space-y-2 mb-5 sm:mb-6">
           <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2">
             <div className="h-[1.5px] w-8 sm:w-10 bg-gradient-to-r from-transparent to-white/40 rounded-full" />
@@ -410,13 +377,11 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
           </p>
         </div>
 
-        {/* Enhanced Button - Smaller */}
         <button
           ref={buttonRef}
           onClick={handleOpenClick}
           className="relative w-full px-8 sm:px-10 py-3 sm:py-3.5 rounded-full font-bold text-sm sm:text-base tracking-wide bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-900 shadow-[0_15px_40px_-10px_rgba(251,191,36,0.5)] hover:shadow-[0_20px_50px_-10px_rgba(251,191,36,0.6)] transition-all duration-300 hover:scale-105 active:scale-95 overflow-hidden group"
         >
-          {/* Shimmer effect */}
           <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
           
           <span className="relative z-10">Buka Undangan</span>
@@ -436,7 +401,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
           </svg>
         </button>
 
-        {/* Bottom decorative line */}
         <div ref={decorLineBottomRef} className="flex items-center justify-center gap-2 sm:gap-3 mt-5 sm:mt-6">
           <div className="h-[1.5px] w-10 sm:w-12 bg-gradient-to-r from-transparent via-rose-300/60 to-rose-400/60 rounded-full shadow-sm" />
           <div className="text-rose-300/80 text-lg sm:text-xl" style={{ fontFamily: "'Playfair Display', serif" }}>✦</div>
