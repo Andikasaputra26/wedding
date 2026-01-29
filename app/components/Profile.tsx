@@ -15,20 +15,19 @@ interface Person {
 
 const people: Person[] = [
   {
-    name: "Rizky Santoso",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&q=80",
-    parents:
-      "Putra pertama dari Bapak H. Ahmad Santoso & Ibu Hj. Siti Nurhaliza",
-    instagram: "@rizkysantoso",
+    name: "A. Ikram Ramadhani",
+    image: "/riri2.jpeg",
+    parents: "Putra Kedua dari pasangan A. Harun & Hj. Andi Mili",
+    instagram: "@ikram",
   },
   {
-    name: "Anisa Putri Wardani",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=1200&q=80",
-    parents:
-      "Putri pertama dari Bapak Dr. H. Bambang Wijaya, M.Si & Ibu Hj. Dewi Kusuma Wardani",
-    instagram: "@anisawardani",
+    name: "Ririswati",
+    image: "/riri6.jpeg",
+    parents: "Putri Bungsu dari pasangan P. Suardi Dg. Mappuji & Hj. Suka",
+    instagram: "@ririswati",
   },
 ];
+
 
 export default function Profile(): JSX.Element {
   const wrapperRef = useRef<HTMLDivElement | null>(null);

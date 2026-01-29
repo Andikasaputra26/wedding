@@ -3,13 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { JSX } from "react";
 import { gsap } from "../lib/gsap";
+import Image from "next/image";
 
 const IMAGES = [
-  "https://images.unsplash.com/photo-1519741497674-611481863552?w=1920&q=80",
-  "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=1920&q=80",
-  "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=1920&q=80",
-  "https://images.unsplash.com/photo-1520975922284-7b9587dd0fda?w=1920&q=80",
-  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&q=80",
+  "/riri1.jpeg",
+  "/riri3.jpeg",
+  "/riri4.jpeg",
 ];
 
 function pickRandom(arr: string[], count: number) {
@@ -30,10 +29,9 @@ export default function Hero(): JSX.Element {
         defaults: { ease: "power3.out" },
       });
 
-      // Sophisticated entrance animation
       tl.from(".ornament-line", {
         scaleX: 0,
-        duration: 1.2,
+        duration: 1,
         ease: "power4.out",
       })
         .from(
@@ -41,61 +39,31 @@ export default function Hero(): JSX.Element {
           {
             scale: 0,
             rotation: -180,
-            duration: 0.8,
+            duration: 0.7,
             stagger: 0.1,
-          },
-          "-=0.6"
-        )
-        .from(
-          ".flower-stem",
-          {
-            scaleY: 0,
-            transformOrigin: "bottom center",
-            duration: 1.2,
-            ease: "power2.out",
-          },
-          "-=0.8"
-        )
-        .from(
-          ".flower-bloom",
-          {
-            scale: 0,
-            opacity: 0,
-            rotation: -90,
-            duration: 0.8,
-            stagger: 0.15,
           },
           "-=0.5"
         )
         .from(
-          ".hero-item",
+          ".hero-item h1, .hero-item p",
           {
             opacity: 0,
             y: 40,
+            filter: "blur(6px)",
             duration: 1,
             stagger: 0.15,
+            ease: "power3.out",
           },
-          "-=0.6"
+          "-=0.3"
         );
 
-      // Floating animation for flowers
-      gsap.to(".flower-bloom", {
-        y: -8,
-        duration: 2,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        stagger: 0.3,
-      });
-
-      // Subtle scale animation for ornaments
       gsap.to(".ornament-circle", {
-        scale: 1.1,
-        duration: 3,
+        scale: 1.08,
+        duration: 2.5,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut",
-        stagger: 0.5,
+        stagger: 0.4,
       });
     }, ref);
 
@@ -103,219 +71,228 @@ export default function Hero(): JSX.Element {
   }, []);
 
   const changeBg = (url: string) => {
-    if (!bgRef.current || !overlayRef.current || url === bg) return;
+  if (!bgRef.current || !overlayRef.current || url === bg) return;
 
-    gsap.to(overlayRef.current, {
-      opacity: 0.3,
-      duration: 0.2,
-    });
+  // Jangan gelapkan overlay
+  gsap.to(overlayRef.current, {
+    opacity: 0.6, // sebelumnya 0.3
+    duration: 0.2,
+  });
 
-    gsap.to(bgRef.current, {
-      opacity: 0,
-      scale: 1.05,
-      duration: 0.4,
-      ease: "power2.in",
-      onComplete: () => {
-        setBg(url);
-        gsap.fromTo(
-          bgRef.current,
-          { opacity: 0, scale: 1.1 },
-          { 
-            opacity: 1, 
-            scale: 1, 
-            duration: 0.8, 
-            ease: "power2.out",
-            onComplete: () => {
-              gsap.to(overlayRef.current, {
-                opacity: 1,
-                duration: 0.3,
-              });
-            }
-          }
-        );
-      },
-    });
+  gsap.to(bgRef.current, {
+    opacity: 0,
+    scale: 1.05,
+    duration: 0.3,
+    ease: "power2.in",
+    onComplete: () => {
+      setBg(url);
+      gsap.fromTo(
+        bgRef.current,
+        { opacity: 0, scale: 1.1 },
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 0.7,
+          ease: "power2.out",
+          onComplete: () => {
+            gsap.to(overlayRef.current, {
+              opacity: 0.6, // tetap terang
+              duration: 0.3,
+            });
+          },
+        }
+      );
+    },
+  });
   };
+
 
   return (
     <section
       ref={ref}
-      className="relative min-h-screen flex items-center justify-center text-center px-4 sm:px-6 md:px-8 overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center text-center px-4 sm:px-6 md:px-8 overflow-hidden bg-black"
     >
-      {/* Background with enhanced effects */}
+      {/* Background */}
       <div className="absolute inset-0">
         <div
           ref={bgRef}
-          className="absolute inset-0 bg-cover bg-center transition-all duration-700"
-          style={{ backgroundImage: `url('${bg}')` }}
-        />
-        {/* Multi-layer gradient overlay */}
-        <div 
-          ref={overlayRef}
-          className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-900/50 to-slate-950/80"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          className="absolute inset-0"
+        >
+          <Image
+            src={bg}
+            alt="Hero background"
+            fill
+            className="object-cover"
+            quality={90}
+            priority
+          />
+        </div>
         
-        {/* Vignette effect */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)]" />
-        
-        {/* Animated gradient orbs */}
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-amber-500/5 rounded-full blur-[100px] sm:blur-[120px] animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-rose-500/5 rounded-full blur-[100px] sm:blur-[120px] animate-pulse" style={{ animationDelay: "1.5s" }} />
-        
-        {/* Noise texture */}
+        {/* Gradient overlays matching Cover component */}
         <div
-          className="absolute inset-0 opacity-[0.02] mix-blend-overlay"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E")`,
-          }}
+          ref={overlayRef}
+          className="absolute inset-0 bg-gradient-to-br from-slate-950/60 via-slate-900/50 to-slate-950/60"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/50" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.3)_100%)]" />
       </div>
 
-      {/* Decorative ornamental flowers - Left side */}
-      <div className="absolute left-4 sm:left-6 md:left-10 lg:left-16 bottom-0 flex flex-col items-center gap-3 sm:gap-4">
-        {/* Top flower */}
-        <div className="flex flex-col items-center">
-          <span className="flower-bloom text-amber-200/80 text-2xl sm:text-3xl md:text-4xl drop-shadow-lg">
-            ✿
-          </span>
-          <span className="flower-stem w-[2px] h-20 sm:h-28 md:h-36 bg-gradient-to-b from-amber-300/40 via-amber-200/30 to-transparent rounded-full" />
-        </div>
-        
-        {/* Main flower */}
-        <div className="flex flex-col items-center">
-          <span className="flower-bloom text-amber-100 text-3xl sm:text-4xl md:text-5xl drop-shadow-2xl">
-            ✿
-          </span>
-          <span className="flower-stem w-[2px] h-32 sm:h-44 md:h-56 bg-gradient-to-b from-amber-200/50 via-amber-300/40 to-transparent rounded-full" />
-        </div>
-      </div>
+      {/* Floral Corner Decorations - Matching Cover style */}
+      <div className="absolute inset-0 pointer-events-none z-10">
+        {/* Top Left */}
+        <svg className="absolute top-2 left-2 sm:top-4 sm:left-4 lg:top-6 lg:left-6 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 opacity-40" viewBox="0 0 200 200" fill="none" stroke="white" strokeWidth="1.2">
+          <path d="M10 80 Q 30 40, 60 30 T 100 10" strokeLinecap="round" />
+          <path d="M15 90 Q 25 60, 50 50 T 90 35" strokeLinecap="round" />
+          <circle cx="25" cy="95" r="3" fill="white" />
+          <circle cx="45" cy="75" r="2.5" fill="white" />
+          <circle cx="65" cy="60" r="2" fill="white" />
+          <path d="M20 100 Q 35 85, 50 80 Q 45 95, 40 110 Q 30 105, 20 100 Z" fill="white" fillOpacity="0.25" />
+          <path d="M50 70 Q 60 60, 70 58 Q 68 70, 65 80 Q 57 75, 50 70 Z" fill="white" fillOpacity="0.2" />
+        </svg>
 
-      {/* Decorative ornamental flowers - Right side */}
-      <div className="absolute right-4 sm:right-6 md:right-10 lg:right-16 bottom-0 flex flex-col items-center gap-3 sm:gap-4">
-        {/* Top flower */}
-        <div className="flex flex-col items-center">
-          <span className="flower-bloom text-rose-200/80 text-2xl sm:text-3xl md:text-4xl drop-shadow-lg">
-            ✿
-          </span>
-          <span className="flower-stem w-[2px] h-20 sm:h-28 md:h-36 bg-gradient-to-b from-rose-300/40 via-rose-200/30 to-transparent rounded-full" />
-        </div>
-        
-        {/* Main flower */}
-        <div className="flex flex-col items-center">
-          <span className="flower-bloom text-rose-100 text-3xl sm:text-4xl md:text-5xl drop-shadow-2xl">
-            ✿
-          </span>
-          <span className="flower-stem w-[2px] h-32 sm:h-44 md:h-56 bg-gradient-to-b from-rose-200/50 via-rose-300/40 to-transparent rounded-full" />
-        </div>
+        {/* Top Right */}
+        <svg className="absolute top-2 right-2 sm:top-4 sm:right-4 lg:top-6 lg:right-6 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 opacity-40" viewBox="0 0 200 200" fill="none" stroke="white" strokeWidth="1.2" style={{ transform: 'scaleX(-1)' }}>
+          <path d="M10 80 Q 30 40, 60 30 T 100 10" strokeLinecap="round" />
+          <path d="M15 90 Q 25 60, 50 50 T 90 35" strokeLinecap="round" />
+          <circle cx="25" cy="95" r="3" fill="white" />
+          <circle cx="45" cy="75" r="2.5" fill="white" />
+          <circle cx="65" cy="60" r="2" fill="white" />
+          <path d="M20 100 Q 35 85, 50 80 Q 45 95, 40 110 Q 30 105, 20 100 Z" fill="white" fillOpacity="0.25" />
+          <path d="M50 70 Q 60 60, 70 58 Q 68 70, 65 80 Q 57 75, 50 70 Z" fill="white" fillOpacity="0.2" />
+        </svg>
+
+        {/* Bottom Left */}
+        <svg className="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 lg:bottom-6 lg:left-6 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 opacity-40" viewBox="0 0 200 200" fill="none" stroke="white" strokeWidth="1.2" style={{ transform: 'scaleY(-1)' }}>
+          <path d="M10 80 Q 30 40, 60 30 T 100 10" strokeLinecap="round" />
+          <path d="M15 90 Q 25 60, 50 50 T 90 35" strokeLinecap="round" />
+          <circle cx="25" cy="95" r="3" fill="white" />
+          <circle cx="45" cy="75" r="2.5" fill="white" />
+          <circle cx="65" cy="60" r="2" fill="white" />
+          <path d="M20 100 Q 35 85, 50 80 Q 45 95, 40 110 Q 30 105, 20 100 Z" fill="white" fillOpacity="0.25" />
+          <path d="M50 70 Q 60 60, 70 58 Q 68 70, 65 80 Q 57 75, 50 70 Z" fill="white" fillOpacity="0.2" />
+        </svg>
+
+        {/* Bottom Right */}
+        <svg className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 lg:bottom-6 lg:right-6 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 opacity-40" viewBox="0 0 200 200" fill="none" stroke="white" strokeWidth="1.2" style={{ transform: 'scale(-1, -1)' }}>
+          <path d="M10 80 Q 30 40, 60 30 T 100 10" strokeLinecap="round" />
+          <path d="M15 90 Q 25 60, 50 50 T 90 35" strokeLinecap="round" />
+          <circle cx="25" cy="95" r="3" fill="white" />
+          <circle cx="45" cy="75" r="2.5" fill="white" />
+          <circle cx="65" cy="60" r="2" fill="white" />
+          <path d="M20 100 Q 35 85, 50 80 Q 45 95, 40 110 Q 30 105, 20 100 Z" fill="white" fillOpacity="0.25" />
+          <path d="M50 70 Q 60 60, 70 58 Q 68 70, 65 80 Q 57 75, 50 70 Z" fill="white" fillOpacity="0.2" />
+        </svg>
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-4xl w-full px-4">
+      <div className="relative z-20 max-w-4xl w-full px-4">
         {/* Top ornamental line */}
-        <div className="hero-item flex items-center justify-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-          <div className="ornament-line h-[2px] w-16 sm:w-24 md:w-32 bg-gradient-to-r from-transparent via-amber-300/60 to-amber-400/60 rounded-full" />
-          <div className="ornament-circle w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-300/70 shadow-lg shadow-amber-500/30" />
-          <div className="ornament-circle w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-amber-400/80 shadow-lg shadow-amber-500/40" />
-          <div className="ornament-circle w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-300/70 shadow-lg shadow-amber-500/30" />
-          <div className="ornament-line h-[2px] w-16 sm:w-24 md:w-32 bg-gradient-to-l from-transparent via-amber-300/60 to-amber-400/60 rounded-full" />
+        <div className="hero-item flex items-center justify-center gap-2.5 sm:gap-3 md:gap-4 mb-6 sm:mb-7 md:mb-8">
+          <div className="ornament-line h-[1.5px] w-12 sm:w-16 md:w-20 bg-gradient-to-r from-transparent via-white/50 to-white/60 rounded-full" />
+          <div className="ornament-circle w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white/60" />
+          <div className="ornament-circle w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white/70" />
+          <div className="ornament-circle w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white/60" />
+          <div className="ornament-line h-[1.5px] w-12 sm:w-16 md:w-20 bg-gradient-to-l from-transparent via-white/50 to-white/60 rounded-full" />
         </div>
 
         {/* Subtitle */}
         <p 
-          className="hero-item tracking-[0.2em] sm:tracking-[0.25em] md:tracking-[0.3em] text-[10px] sm:text-xs md:text-sm uppercase text-amber-100/70 mb-6 sm:mb-8 font-light"
+          className="hero-item tracking-[0.2em] sm:tracking-[0.25em] text-[10px] sm:text-xs uppercase text-white/70 mb-5 sm:mb-6 md:mb-7 font-light"
           style={{ fontFamily: "'Cormorant Garamond', serif" }}
         >
           We Are Getting Married
         </p>
 
         {/* Names */}
-        <h1 
-          className="hero-item text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-6 sm:mb-8 md:mb-10 leading-tight tracking-wide"
-          style={{ fontFamily: "'Playfair Display', serif" }}
-        >
-          <span className="bg-gradient-to-br from-white via-amber-50 to-amber-100 bg-clip-text text-transparent drop-shadow-2xl">
-            Risky Santoso
-          </span>
-          <span className="block text-2xl sm:text-3xl md:text-4xl my-2 sm:my-3 md:my-4 text-amber-200/90">
-            &
-          </span>
-          <span className="bg-gradient-to-br from-white via-rose-50 to-rose-100 bg-clip-text text-transparent drop-shadow-2xl">
-            Nisa Wardani
-          </span>
-        </h1>
+        <div className="hero-item mb-5 sm:mb-6 md:mb-8">
+          <h1
+            className="hero-item text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light tracking-[0.02em] leading-tight mb-2 sm:mb-3 text-white"
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              textShadow: "0 4px 20px rgba(0,0,0,0.45)",
+            }}
+          >
+            A. Ikram Ramadhani
+          </h1>
 
-        {/* Divider */}
-        <div className="hero-item flex items-center justify-center gap-3 sm:gap-4 mb-6 sm:mb-8 md:mb-10">
-          <div className="h-[1.5px] w-12 sm:w-16 md:w-20 bg-gradient-to-r from-transparent via-white/40 to-white/50 rounded-full" />
-          <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white/60" />
-          <div className="h-[1.5px] w-12 sm:w-16 md:w-20 bg-gradient-to-l from-transparent via-white/40 to-white/50 rounded-full" />
+          <div className="flex items-center justify-center my-2 sm:my-3">
+            <div className="h-px w-10 sm:w-12 md:w-16 bg-white/30" />
+            <span className="mx-3 sm:mx-4 text-lg sm:text-xl md:text-2xl">🌿</span>
+            <div className="h-px w-10 sm:w-12 md:w-16 bg-white/30" />
+          </div>
+          
+          <h1
+            className="hero-item text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light tracking-[0.02em] leading-tight mb-2 sm:mb-3 text-white"
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              textShadow: "0 4px 20px rgba(0,0,0,0.45)",
+            }}
+          >
+            Ririswati
+          </h1>
         </div>
 
         {/* Date */}
-        <div className="hero-item mb-10 sm:mb-12 md:mb-14">
-          <div className="inline-flex items-center gap-3 sm:gap-4 px-6 sm:px-8 md:px-10 py-3 sm:py-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl">
+        <div className="hero-item mb-8 sm:mb-10 md:mb-12">
+          <div className="inline-flex items-center gap-2 sm:gap-3 px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
             <svg 
-              className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200"
+              className="w-4 h-4 sm:w-5 sm:h-5 text-white/80"
               fill="currentColor" 
               viewBox="0 0 20 20"
             >
               <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
             </svg>
             <p 
-              className="text-sm sm:text-base md:text-lg lg:text-xl tracking-wide text-white font-semibold"
-              style={{ fontFamily: "'Crimson Text', serif" }}
+              className="text-xs sm:text-sm md:text-base tracking-wide text-white font-light"
+              style={{ fontFamily: "'Cormorant Garamond', serif" }}
             >
-              Sabtu, 20 Juni 2026
+              08 Februari 2026
             </p>
           </div>
         </div>
 
-        {/* Gallery thumbnails with enhanced design */}
+        {/* Divider */}
+        <div className="hero-item w-16 sm:w-20 h-px bg-white/20 mx-auto mb-6 sm:mb-8" />
+
+        {/* Gallery thumbnails */}
         <div className="hero-item">
-          <p 
-            className="text-xs sm:text-sm text-white/60 mb-4 sm:mb-5 tracking-wide"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}
-          >
-            Pilih Galeri
-          </p>
-          <div className="flex justify-center items-center gap-2 sm:gap-3 md:gap-4">
+          <div className="flex justify-center items-center gap-2 sm:gap-3">
             {choices.map((img, index) => (
               <button
                 key={img}
                 onClick={() => changeBg(img)}
-                className={`group relative rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-300 ${
+                className={`group relative rounded-lg sm:rounded-xl overflow-hidden transition-all duration-300 ${
                   bg === img
-                    ? "w-20 h-16 sm:w-28 sm:h-20 md:w-32 md:h-24 ring-2 sm:ring-[3px] ring-amber-300 shadow-[0_0_30px_rgba(251,191,36,0.4)]"
-                    : "w-16 h-12 sm:w-20 sm:h-14 md:w-24 md:h-16 opacity-60 hover:opacity-100 hover:scale-105"
+                    ? "w-20 h-16 sm:w-24 sm:h-20 md:w-28 md:h-22 ring-2 ring-white/50 shadow-lg"
+                    : "w-16 h-12 sm:w-20 sm:h-16 md:w-24 md:h-18 opacity-50 hover:opacity-80 hover:scale-105"
                 }`}
               >
-                {/* Image */}
-                <img 
-                  src={img} 
-                  alt={`Gallery ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
+                <div className="relative w-full h-full">
+                  <Image
+                    src={img}
+                    alt={`Gallery ${index + 1}`}
+                    fill
+                    className="object-cover"
+                    quality={80}
+                  />
+                </div>
                 
-                {/* Overlay gradient */}
                 <div className={`absolute inset-0 transition-opacity duration-300 ${
                   bg === img 
-                    ? "bg-gradient-to-t from-amber-900/30 to-transparent" 
-                    : "bg-gradient-to-t from-black/50 to-transparent group-hover:from-black/30"
+                    ? "bg-gradient-to-t from-black/20 to-transparent" 
+                    : "bg-gradient-to-t from-black/40 to-transparent group-hover:from-black/30"
                 }`} />
                 
-                {/* Active indicator */}
                 {bg === img && (
-                  <div className="absolute top-1 right-1 sm:top-2 sm:right-2">
-                    <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-300 shadow-lg shadow-amber-500/50" />
+                  <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2">
+                    <div className="w-2 h-2 rounded-full bg-white shadow-lg" />
                   </div>
                 )}
                 
-                {/* Border */}
-                <div className={`absolute inset-0 border transition-all duration-300 rounded-xl sm:rounded-2xl ${
+                <div className={`absolute inset-0 border rounded-lg sm:rounded-xl transition-all duration-300 ${
                   bg === img
-                    ? "border-amber-300/50"
-                    : "border-white/20 group-hover:border-white/40"
+                    ? "border-white/40"
+                    : "border-white/20 group-hover:border-white/30"
                 }`} />
               </button>
             ))}
@@ -323,28 +300,28 @@ export default function Hero(): JSX.Element {
         </div>
 
         {/* Bottom ornamental line */}
-        <div className="hero-item flex items-center justify-center gap-3 sm:gap-4 mt-10 sm:mt-12 md:mt-14">
-          <div className="ornament-line h-[2px] w-16 sm:w-24 md:w-32 bg-gradient-to-r from-transparent via-rose-300/60 to-rose-400/60 rounded-full" />
-          <div className="ornament-circle w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-rose-300/70 shadow-lg shadow-rose-500/30" />
-          <div className="ornament-circle w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-rose-400/80 shadow-lg shadow-rose-500/40" />
-          <div className="ornament-circle w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-rose-300/70 shadow-lg shadow-rose-500/30" />
-          <div className="ornament-line h-[2px] w-16 sm:w-24 md:w-32 bg-gradient-to-l from-transparent via-rose-300/60 to-rose-400/60 rounded-full" />
+        <div className="hero-item flex items-center justify-center gap-2.5 sm:gap-3 md:gap-4 mt-10 sm:mt-12 md:mt-14">
+          <div className="ornament-line h-[1.5px] w-12 sm:w-16 md:w-20 bg-gradient-to-r from-transparent via-white/50 to-white/60 rounded-full" />
+          <div className="ornament-circle w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white/60" />
+          <div className="ornament-circle w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white/70" />
+          <div className="ornament-circle w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white/60" />
+          <div className="ornament-line h-[1.5px] w-12 sm:w-16 md:w-20 bg-gradient-to-l from-transparent via-white/50 to-white/60 rounded-full" />
         </div>
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 sm:bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-        <div className="flex flex-col items-center gap-2">
-          <p className="text-[10px] sm:text-xs text-white/50 tracking-widest" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+      <div className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 animate-bounce z-20">
+        <div className="flex flex-col items-center gap-1 sm:gap-2">
+          <p className="text-[9px] sm:text-[10px] text-white/40 tracking-[0.2em] font-light" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
             SCROLL
           </p>
           <svg 
-            className="w-5 h-5 sm:w-6 sm:h-6 text-white/50" 
+            className="w-4 h-4 sm:w-5 sm:h-5 text-white/40" 
             fill="none" 
             stroke="currentColor" 
             viewBox="0 0 24 24"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
           </svg>
         </div>
       </div>

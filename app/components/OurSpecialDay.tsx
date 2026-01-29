@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import Image from "next/image";
 
 export default function OurSpecialDay() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -119,10 +120,23 @@ export default function OurSpecialDay() {
     <section
       ref={containerRef}
       className="relative min-h-screen w-full flex items-center justify-center px-4 sm:px-6 md:px-8 py-16 sm:py-20 md:py-24 overflow-hidden"
-      style={{
-        background: "linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)",
-      }}
     >
+      {/* Background Image */}
+      <div className="absolute inset-0">
+        <Image
+          src="/riri1.jpeg" // ganti sesuai gambar yang kamu mau
+          alt="Our Special Day Background"
+          fill
+          className="object-cover"
+          quality={90}
+          priority
+        />
+
+        {/* Overlay agar teks tetap jelas */}
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/40" />
+      </div>
+
       {/* Enhanced background effects */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Gradient overlays */}
