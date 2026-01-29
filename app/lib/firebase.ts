@@ -1,5 +1,6 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getDatabase } from "firebase/database";
 
 // Gunakan prefix NEXT_PUBLIC_ agar bisa dibaca di client Next.js
 const firebaseConfig = {
@@ -14,4 +15,8 @@ const firebaseConfig = {
 
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
+// Firestore (untuk fitur lain jika masih dipakai)
 export const db = getFirestore(app);
+
+// Realtime Database (untuk Join / RSVP baru)
+export const database = getDatabase(app);

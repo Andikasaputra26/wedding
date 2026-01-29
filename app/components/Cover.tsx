@@ -25,9 +25,11 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
 
   useEffect(() => {
     setMounted(true);
-    const guestName = params.get("to") || params.get("name") || "Nama Tamu";
-    setGuest(guestName);
+    const raw = params.get("to") || params.get("name") || "Nama Tamu";
+    const formatted = raw.replace(/\+/g, " ");
+    setGuest(formatted);
   }, [params]);
+
 
   useEffect(() => {
     if (!mounted) return;

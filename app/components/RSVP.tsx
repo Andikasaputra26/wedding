@@ -1,240 +1,250 @@
 "use client";
 
-import { JSX, useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { addDoc, collection, query, orderBy, limit, onSnapshot, serverTimestamp } from "firebase/firestore";
-import { db } from "../lib/firebase";
+import { useEffect } from "react";
 import { useAtom } from "jotai";
-import { atomWithReset, useResetAtom } from "jotai/utils";
+import {
+  nameAtom,
+  messageAtom,
+  attendanceAtom,
+  commentsAtom,
+  attendanceCountsAtom,
+} from "../lib/atoms";
 
-gsap.registerPlugin(ScrollTrigger);
+import {
+  addDoc,
+  collection,
+  getDocs,
+  orderBy,
+  query,
+} from "firebase/firestore";
+import { db } from "../lib/firebase";
+import { motion } from "framer-motion";
 
-interface Comment {
-  createdAt: any;
-  id: string;
+export type Comment = {
+  id?: string;
   name: string;
   message: string;
   attendance: string;
   date: string;
-}
+};
 
-// Jotai atoms
-const nameAtom = atomWithReset("");
-const messageAtom = atomWithReset("");
-const attendanceAtom = atomWithReset("");
-const commentsAtom = atomWithReset<Comment[]>([]);
-const loadingCommentsAtom = atomWithReset(true);
-const isSubmittingAtom = atomWithReset(false);
-const showSuccessAtom = atomWithReset(false);
-
-export default function RSVP(): JSX.Element {
-  const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const formRef = useRef<HTMLFormElement>(null);
-
+export default function Join() {
   const [name, setName] = useAtom(nameAtom);
   const [message, setMessage] = useAtom(messageAtom);
   const [attendance, setAttendance] = useAtom(attendanceAtom);
   const [comments, setComments] = useAtom(commentsAtom);
-  const [loadingComments, setLoadingComments] = useAtom(loadingCommentsAtom);
-  const [isSubmitting, setIsSubmitting] = useAtom(isSubmittingAtom);
-  const [showSuccess, setShowSuccess] = useAtom(showSuccessAtom);
+  const [attendanceCounts, setAttendanceCounts] = useAtom(attendanceCountsAtom);
 
-  const resetName = useResetAtom(nameAtom);
-  const resetMessage = useResetAtom(messageAtom);
-  const resetAttendance = useResetAtom(attendanceAtom);
-
+  // Ambil data dari Firestore
   useEffect(() => {
-    if (!sectionRef.current) return;
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ scrollTrigger: { trigger: sectionRef.current, start: "top 70%", toggleActions: "play none none reverse" } });
-      tl.from(titleRef.current, { y: 40, opacity: 0, duration: 1, ease: "power3.out" })
-        .from(".ornament-line", { scaleX: 0, opacity: 0, duration: 0.8, stagger: 0.1 }, "-=0.6")
-        .from(formRef.current, { y: 40, opacity: 0, scale: 0.95, duration: 1 }, "-=0.4")
-        .from(".form-field", { y: 20, opacity: 0, duration: 0.6, stagger: 0.1 }, "-=0.6");
-    }, sectionRef);
-    return () => ctx.revert();
-  }, []);
+    const fetchComments = async () => {
+      const q = query(
+        collection(db, "join_message"),
+        orderBy("date", "desc")
+      );
 
-  useEffect(() => {
-    const q = query(
-      collection(db, "join_message"),
-      orderBy("createdAt", "desc"),
-      limit(10)
-    );
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const commentsData: Comment[] = [];
-      snapshot.forEach((doc) => commentsData.push({ id: doc.id, ...doc.data() } as Comment));
-      setComments(commentsData);
-      setLoadingComments(false);
-    });
-    return () => unsubscribe();
-  }, [setComments, setLoadingComments]);
+      const snap = await getDocs(q);
+      const parsed: Comment[] = snap.docs.map((d) => ({
+        id: d.id,
+        ...(d.data() as Comment),
+      }));
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    try {
-      await addDoc(collection(db, "join_message"), {
-        name,
-        message,
-        attendance,
-        createdAt: serverTimestamp(),
+      setComments(parsed);
+
+      const counts = { hadir: 0, tidakHadir: 0, ragu: 0 };
+      parsed.forEach((c) => {
+        if (c.attendance === "Hadir") counts.hadir++;
+        if (c.attendance === "Tidak Hadir") counts.tidakHadir++;
+        if (c.attendance === "Masih Ragu") counts.ragu++;
       });
-      setShowSuccess(true);
-      resetName();
-      resetMessage();
-      resetAttendance();
-      setTimeout(() => setShowSuccess(false), 3000);
-    } catch (err) {
-      console.error(err);
-      alert("Gagal mengirim data.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+      setAttendanceCounts(counts);
+    };
 
-  const getBadge = (att: string) => {
-    if (att === "hadir") return <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200 shadow-sm">✓ Hadir</span>;
-    if (att === "tidak-hadir") return <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-red-50 text-red-700 border border-red-200 shadow-sm">✗ Tidak Hadir</span>;
-    if (att === "masih-ragu") return <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200 shadow-sm">? Masih Ragu</span>;
-    return null;
+    fetchComments();
+  }, [setComments, setAttendanceCounts]);
+
+  const handleCommentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!name || !message || attendance === "Konfirmasi Kehadiran") {
+      alert("Semua kolom harus diisi!");
+      return;
+    }
+
+    const newComment: Comment = {
+      name,
+      message,
+      attendance,
+      date: new Date().toISOString(),
+    };
+
+    const docRef = await addDoc(
+      collection(db, "join_message"),
+      newComment
+    );
+
+    const saved: Comment = { ...newComment, id: docRef.id };
+
+    setComments([saved, ...comments]);
+
+    const updatedCounts = { ...attendanceCounts };
+    if (attendance === "Hadir") updatedCounts.hadir++;
+    if (attendance === "Tidak Hadir") updatedCounts.tidakHadir++;
+    if (attendance === "Masih Ragu") updatedCounts.ragu++;
+    setAttendanceCounts(updatedCounts);
+
+    setName("");
+    setMessage("");
+    setAttendance("Konfirmasi Kehadiran");
   };
 
   return (
-    <section ref={sectionRef} className="relative py-20 px-4 overflow-hidden" style={{ background: "linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)" }}>
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/50 via-transparent to-slate-950/50" />
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-rose-500/5 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: "2s" }} />
-      </div>
+  <section className="relative py-28 px-4 bg-gradient-to-b from-slate-50 via-gray-50 to-white overflow-hidden">
+    {/* Background */}
+    <div className="absolute inset-0 pointer-events-none">
+      <motion.div
+        animate={{ scale: [1, 1.2, 1], opacity: [0.05, 0.1, 0.05] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-0 right-0 w-96 h-96 rounded-full bg-gray-300 blur-[120px]"
+      />
+      <motion.div
+        animate={{ scale: [1, 1.3, 1], opacity: [0.05, 0.1, 0.05] }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        className="absolute bottom-0 left-0 w-96 h-96 rounded-full bg-slate-300 blur-[120px]"
+      />
+    </div>
 
-      <div className="relative z-10 max-w-5xl mx-auto text-center">
-        <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="ornament-line h-[2px] w-16 bg-gradient-to-r from-transparent via-amber-500/60 to-amber-500 rounded-full" />
-          <div className="ornament-line w-2.5 h-2.5 rounded-full bg-amber-500 shadow-xl shadow-amber-500/50" />
-          <div className="ornament-line h-[2px] w-16 bg-gradient-to-l from-transparent via-amber-500/60 to-amber-500 rounded-full" />
-        </div>
-
-        <h2 ref={titleRef} className="text-5xl font-bold mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
-          <span className="bg-gradient-to-br from-white via-amber-50 to-amber-100 bg-clip-text text-transparent">Ucapan & Konfirmasi</span>
+    <div className="relative z-10 max-w-5xl mx-auto">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="text-center mb-16"
+      >
+        <h2 className="text-4xl md:text-5xl font-serif text-slate-900 mb-3">
+          Ucapan & Konfirmasi
         </h2>
-        <p className="text-sm text-white/60 mb-12 max-w-2xl mx-auto" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Berikan ucapan terbaik untuk kami dan konfirmasi kehadiran Anda</p>
+        <p className="text-sm tracking-[0.3em] uppercase text-gray-500">
+          Reservasi Kehadiran
+        </p>
+      </motion.div>
 
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Form */}
-        <div className="relative max-w-2xl mx-auto mb-20">
-          <div className="absolute -inset-2 bg-gradient-to-r from-amber-400/20 via-rose-400/20 to-amber-400/20 rounded-3xl blur-2xl" />
-          <form ref={formRef} onSubmit={handleSubmit} className="relative bg-white rounded-3xl p-10 shadow-2xl border border-white/80">
-            <div className="text-center mb-8">
-              <div className="w-18 h-18 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-xl">
-                <svg className="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                </svg>
-              </div>
-              <h3 className="text-3xl font-bold text-slate-800 mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>Buku Tamu Digital</h3>
-              <p className="text-sm text-slate-500" style={{ fontFamily: "'Crimson Text', serif" }}>Silakan isi form di bawah ini</p>
-            </div>
-
-            <div className="space-y-5">
-              <div className="form-field">
-                <label className="block text-left text-sm font-semibold text-slate-700 mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                  <div className="flex items-center gap-2"><div className="w-1 h-4 bg-amber-500 rounded-full" />Nama Lengkap</div>
-                </label>
-                <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className="w-full border-2 border-slate-200 focus:border-amber-400 rounded-xl px-4 py-3.5 text-sm bg-white transition-all focus:outline-none focus:ring-4 focus:ring-amber-400/10 text-slate-800 placeholder:text-slate-400" placeholder="Masukkan nama lengkap" style={{ fontFamily: "'Crimson Text', serif" }} />
-              </div>
-
-              <div className="form-field">
-                <label className="block text-left text-sm font-semibold text-slate-700 mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                  <div className="flex items-center gap-2"><div className="w-1 h-4 bg-amber-500 rounded-full" />Ucapan & Doa</div>
-                </label>
-                <textarea rows={4} required value={message} onChange={(e) => setMessage(e.target.value)} className="w-full border-2 border-slate-200 focus:border-amber-400 rounded-xl px-4 py-3.5 text-sm bg-white transition-all focus:outline-none focus:ring-4 focus:ring-amber-400/10 resize-none text-slate-800 placeholder:text-slate-400" placeholder="Tulis ucapan dan doa..." style={{ fontFamily: "'Crimson Text', serif" }} />
-              </div>
-
-              <div className="form-field">
-                <label className="block text-left text-sm font-semibold text-slate-700 mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                  <div className="flex items-center gap-2"><div className="w-1 h-4 bg-amber-500 rounded-full" />Konfirmasi Kehadiran</div>
-                </label>
-                <div className="relative">
-                  <select required value={attendance} onChange={(e) => setAttendance(e.target.value)} className="w-full appearance-none border-2 border-slate-200 focus:border-amber-400 rounded-xl px-4 py-3.5 pr-10 text-sm bg-white transition-all focus:outline-none focus:ring-4 focus:ring-amber-400/10 text-slate-800 cursor-pointer" style={{ fontFamily: "'Crimson Text', serif" }}>
-                    <option value="">Pilih konfirmasi</option>
-                    <option value="hadir">✓ Hadir</option>
-                    <option value="tidak-hadir">✗ Tidak Hadir</option>
-                    <option value="masih-ragu">? Masih Ragu</option>
-                  </select>
-                  <svg className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-600 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                </div>
-              </div>
-
-              <div className="form-field pt-2">
-                <button type="submit" disabled={isSubmitting} className="group w-full py-4 rounded-xl font-bold text-base text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                  {isSubmitting ? "Mengirim..." : "Kirim Ucapan"}
-                </button>
-              </div>
-            </div>
-
-            {showSuccess && (
-              <div className="absolute inset-0 flex items-center justify-center bg-white/98 rounded-3xl z-10">
-                <div className="text-center">
-                  <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center animate-bounce">
-                    <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="lg:col-span-2"
+        >
+          <div className="relative bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-10 border border-slate-200/50">
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-4 mb-8">
+              {[
+                { label: "Hadir", value: attendanceCounts.hadir },
+                { label: "Tidak Hadir", value: attendanceCounts.tidakHadir },
+                { label: "Ragu", value: attendanceCounts.ragu },
+              ].map((stat, i) => (
+                <div key={i} className="text-center">
+                  <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-400 to-slate-500 shadow-lg flex items-center justify-center text-white text-2xl font-bold mb-2">
+                    {stat.value}
                   </div>
-                  <h3 className="text-3xl font-bold text-green-700 mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>Terima Kasih!</h3>
-                  <p className="text-sm text-slate-600" style={{ fontFamily: "'Crimson Text', serif" }}>Ucapan Anda telah terkirim</p>
-                </div>
-              </div>
-            )}
-          </form>
-        </div>
-
-        {/* Comments */}
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-center gap-3 mb-10">
-            <div className="h-[2px] w-16 bg-gradient-to-r from-transparent to-white/50 rounded-full" />
-            <h3 className="text-4xl font-semibold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>Ucapan Tamu</h3>
-            <div className="h-[2px] w-16 bg-gradient-to-l from-transparent to-white/50 rounded-full" />
-          </div>
-
-          {loadingComments ? (
-            <div className="text-center py-12">
-              <svg className="animate-spin w-10 h-10 mx-auto text-amber-400" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg>
-              <p className="mt-4 text-sm text-white/60">Memuat...</p>
-            </div>
-          ) : comments.length === 0 ? (
-            <div className="text-center py-12"><p className="text-white/60">Belum ada ucapan</p></div>
-          ) : (
-            <div className="grid gap-4 md:grid-cols-2">
-              {comments.map((c, i) => (
-                <div key={c.id} className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 hover:bg-white/15 transition-all" style={{ animation: `fadeIn 0.6s ${i * 0.1}s both` }}>
-                  <div className="flex justify-between items-start gap-3 mb-3">
-                    <div className="flex-1">
-                      <h4 className="text-lg font-semibold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>{c.name}</h4>
-                      <p className="text-xs text-white/50 mt-1">
-                      {c.createdAt?.toDate().toLocaleDateString("id-ID", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      }) || "Baru saja"}
-                    </p>
-                    </div>
-                    {getBadge(c.attendance)}
-                  </div>
-                  <p className="text-sm text-white/80 leading-relaxed" style={{ fontFamily: "'Crimson Text', serif" }}>{c.message}</p>
+                  <p className="text-xs text-gray-600 font-medium">{stat.label}</p>
                 </div>
               ))}
             </div>
-          )}
-        </div>
-      </div>
 
-      <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
-    </section>
-  );
+            {/* Form */}
+            <form onSubmit={handleCommentSubmit} className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Nama Lengkap
+                </label>
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full rounded-2xl border-2 border-gray-200 px-4 py-3 focus:ring-2 focus:ring-slate-400 focus:border-slate-400 outline-none bg-white/50"
+                  placeholder="Masukkan nama Anda"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Ucapan & Doa
+                </label>
+                <textarea
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  rows={4}
+                  className="w-full rounded-2xl border-2 border-gray-200 px-4 py-3 focus:ring-2 focus:ring-slate-400 focus:border-slate-400 outline-none resize-none bg-white/50"
+                  placeholder="Tuliskan ucapan dan doa..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Konfirmasi Kehadiran
+                </label>
+                <select
+                  value={attendance}
+                  onChange={(e) => setAttendance(e.target.value)}
+                  className="w-full rounded-2xl border-2 border-gray-200 px-4 py-3 focus:ring-2 focus:ring-slate-400 focus:border-slate-400 outline-none bg-white/50"
+                >
+                  <option>Konfirmasi Kehadiran</option>
+                  <option>Hadir</option>
+                  <option>Tidak Hadir</option>
+                  <option>Masih Ragu</option>
+                </select>
+              </div>
+
+              <motion.button
+                type="submit"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full mt-6 py-4 rounded-full bg-gradient-to-r from-slate-600 to-slate-700 text-white font-semibold shadow-lg"
+              >
+                Kirim Ucapan
+              </motion.button>
+            </form>
+          </div>
+        </motion.div>
+
+        {/* Comments */}
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.2 }}
+        >
+          <h3 className="text-2xl font-serif text-slate-900 mb-6">
+            Ucapan Tamu
+          </h3>
+
+          <div className="max-h-[600px] overflow-y-auto space-y-4 pr-2">
+            {comments.map((c) => (
+              <div
+                key={c.id}
+                className="bg-white/80 backdrop-blur-xl rounded-2xl p-5 shadow-lg border border-slate-200/50"
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <p className="font-semibold text-slate-900">{c.name}</p>
+                  <span className="text-xs px-3 py-1 rounded-full bg-slate-100 text-slate-700">
+                    {c.attendance}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  {c.message}
+                </p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  </section>
+);
+
 }
