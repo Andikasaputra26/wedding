@@ -21,7 +21,7 @@ const people: Person[] = [
     instagram: "@ikram",
   },
   {
-    name: "Ririswati",
+    name: "Ririswati, S. Ap",
     image: "/riri6.jpeg",
     parents: "Putri Bungsu dari pasangan P. Suardi Dg. Mappuji & Hj. Suka",
     instagram: "@ririswati",
