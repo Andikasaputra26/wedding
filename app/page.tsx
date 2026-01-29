@@ -47,7 +47,7 @@ export default function Home(): JSX.Element {
         <Footer />
       </main>
 
-      <MusicButton />
+      <MusicButton autoPlay={opened} />
     </>
   );
 }

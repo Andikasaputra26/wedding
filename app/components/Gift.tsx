@@ -13,7 +13,7 @@ export default function Gift() {
   const cardRef = useRef<HTMLDivElement>(null);
 
   const [copied, setCopied] = useState(false);
-  const number = "089510403610";
+  const number = "085399480194";
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -104,7 +104,7 @@ export default function Gift() {
             </div>
 
             <p className="text-sm sm:text-base text-white/70 mb-6">
-              a.n. Riri
+              a.n. Ririswati
             </p>
 
             <button
