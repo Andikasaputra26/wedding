@@ -10,17 +10,25 @@ interface MusicButtonProps {
 export default function MusicButton({ autoPlay }: MusicButtonProps): JSX.Element {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playing, setPlaying] = useState<boolean>(false);
+  const hasAutoPlayed = useRef(false);
 
   useEffect(() => {
-    if (autoPlay && audioRef.current && !playing) {
+    if (
+      autoPlay &&
+      audioRef.current &&
+      !hasAutoPlayed.current
+    ) {
       audioRef.current
         .play()
-        .then(() => setPlaying(true))
+        .then(() => {
+          setPlaying(true);
+          hasAutoPlayed.current = true;
+        })
         .catch(() => {
-          // Autoplay bisa diblokir browser, user tetap bisa klik manual
+          // Autoplay bisa diblokir browser
         });
     }
-  }, [autoPlay, playing]);
+  }, [autoPlay]);
 
   const toggleMusic = () => {
     if (!audioRef.current) return;
@@ -42,7 +50,7 @@ export default function MusicButton({ autoPlay }: MusicButtonProps): JSX.Element
           playing ? "animate-spin" : ""
         }`}
       >
-        🎵
+        {playing ? "⏸" : "🎵"}
       </button>
       <audio ref={audioRef} loop src="/musik.mp3" />
     </>
