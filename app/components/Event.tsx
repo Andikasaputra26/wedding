@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import React, { JSX } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -102,10 +103,23 @@ export default function Event(): JSX.Element {
     <section
       ref={sectionRef}
       className="relative py-20 sm:py-24 md:py-32 px-4 sm:px-6 md:px-8 overflow-hidden"
-      style={{
-        background: "linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)",
-      }}
     >
+      {/* Background Image */}
+      <div className="absolute inset-0">
+        <Image
+          src="/riri3.jpeg" // ganti sesuai gambar yang kamu mau
+          alt="Event Background"
+          fill
+          className="object-cover"
+          quality={90}
+          priority
+        />
+
+        {/* Overlay agar teks tetap terbaca */}
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/50" />
+      </div>
+
       {/* Enhanced background effects */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Gradient overlays */}
