@@ -16,7 +16,7 @@ interface TimeLeft {
 }
 
 export default function Event(): JSX.Element {
-  const target = new Date("2026-02-08T08:00:00").getTime();
+  const target = new Date("2026-02-07T08:00:00").getTime();
   const [t, setT] = useState({ d: 0, h: 0, m: 0, s: 0 });
   
   const sectionRef = useRef<HTMLElement>(null);
@@ -262,7 +262,7 @@ export default function Event(): JSX.Element {
               className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 sm:mb-6 tracking-wide"
               style={{ fontFamily: "'Playfair Display', serif" }}
             >
-              Minggu, 8 Februari 2026
+              Sabtu, 7 Februari 2026
             </h3>
 
             {/* Divider */}
@@ -311,7 +311,7 @@ export default function Event(): JSX.Element {
                   className="text-base sm:text-lg md:text-xl text-white/80 italic"
                   style={{ fontFamily: "'Crimson Text', serif" }}
                 >
-                  Lokasi akan diinformasikan lebih lanjut
+                  Dusun toli - toli, desa palakka Kec.Kahu Kab.Bone
                 </p>
               </div>
             </div>

@@ -205,7 +205,7 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
           className="text-base sm:text-lg md:text-xl lg:text-2xl font-light tracking-[0.3em] mb-6 sm:mb-8 md:mb-10"
           style={{ fontFamily: "'Cormorant Garamond', serif" }}
         >
-          08.02.26
+          07.02.26
         </p>
 
         {/* Divider Line */}

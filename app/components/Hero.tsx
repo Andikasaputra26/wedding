@@ -246,7 +246,7 @@ export default function Hero(): JSX.Element {
               className="text-xs sm:text-sm md:text-base tracking-wide text-white font-light"
               style={{ fontFamily: "'Cormorant Garamond', serif" }}
             >
-              08 Februari 2026
+              07 Februari 2026
             </p>
           </div>
         </div>
