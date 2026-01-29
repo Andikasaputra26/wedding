@@ -184,7 +184,7 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
             className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light tracking-[0.05em] leading-tight"
             style={{ fontFamily: "'Playfair Display', serif" }}
           >
-            A. Ikram Ramadhani
+            Ikram
           </h1>
           <div className="flex items-center justify-center my-2 sm:my-3">
             <div className="h-px w-12 sm:w-16 bg-white/30" />
@@ -195,7 +195,7 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
             className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light tracking-[0.05em]"
             style={{ fontFamily: "'Playfair Display', serif" }}
           >
-            Ririswati
+            Riri
           </h1>
         </div>
 

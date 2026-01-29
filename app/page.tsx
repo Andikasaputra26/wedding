@@ -14,6 +14,7 @@ import Footer from "./components/Footer";
 import MusicButton from "./components/MusicButton";
 import FloatingFlowers from "./components/FloatingFlowers";
 import SmoothScroll from "./components/SmoothScroll";
+import Gift from "./components/Gift";
 
 export default function Home(): JSX.Element {
   const [opened, setOpened] = useState<boolean>(false);
@@ -39,6 +40,7 @@ export default function Home(): JSX.Element {
         <Couple />
         <Profile />
         <Event />
+        <Gift/>
         <Gallery />
         {/* <Location /> */}
         <RSVP />

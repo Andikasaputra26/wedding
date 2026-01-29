@@ -9,7 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const images = [
   { url: "/riri1.jpeg", gridClass: "col-span-1 row-span-2 md:col-start-1 md:row-start-1" },
-  { url: "/riri2.jpeg", gridClass: "col-span-1 row-span-1 md:col-span-2 md:col-start-2 md:row-start-1" },
+  { url: "/riri7.jpeg", gridClass: "col-span-1 row-span-1 md:col-span-2 md:col-start-2 md:row-start-1" },
   { url: "/riri3.jpeg", gridClass: "col-span-1 row-span-1 md:col-start-2 md:row-start-2" },
   { url: "/riri4.jpeg", gridClass: "col-span-1 row-span-2 md:col-start-3 md:row-start-2" },
   { url: "/riri5.jpeg", gridClass: "col-span-1 row-span-1 md:col-start-1 md:row-start-3" },
