@@ -29,8 +29,6 @@ export default function Home(): JSX.Element {
         </Suspense>
       )}
 
-      {/* {opened && <FloatingFlowers />} */}
-
       <main
         className={`transition-all duration-[1500ms] ease-out ${
           opened ? "opacity-100 translate-y-0" : "opacity-0 translate-y-24"
@@ -40,14 +38,15 @@ export default function Home(): JSX.Element {
         <Couple />
         <Profile />
         <Event />
-        <Gift/>
+        <Gift />
         <Gallery />
-        {/* <Location /> */}
         <RSVP />
         <Footer />
       </main>
 
-      <MusicButton autoPlay={opened} />
+      {/* Music hanya muncul setelah Cover ditutup */}
+      {opened && <MusicButton autoPlay={opened} />}
     </>
   );
 }
+
