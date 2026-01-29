@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -11,6 +11,9 @@ export default function Gift() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+
+  const [copied, setCopied] = useState(false);
+  const number = "089510403610";
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -53,7 +56,7 @@ export default function Gift() {
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
-          src="/riri4.jpeg"   // ganti sesuai foto yang kamu mau
+          src="/riri4.jpeg"
           alt="Gift Background"
           fill
           className="object-cover"
@@ -85,10 +88,7 @@ export default function Gift() {
         </p>
 
         {/* Gift Card */}
-        <div
-          ref={cardRef}
-          className="relative max-w-md sm:max-w-lg mx-auto"
-        >
+        <div ref={cardRef} className="relative max-w-md sm:max-w-lg mx-auto">
           <div className="absolute -inset-2 bg-gradient-to-br from-amber-400/20 via-rose-400/20 to-amber-400/20 rounded-[2rem] blur-2xl" />
 
           <div className="relative bg-white/15 backdrop-blur-xl rounded-[2rem] p-6 sm:p-8 md:p-10 border border-white/30 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]">
@@ -100,7 +100,7 @@ export default function Gift() {
             </p>
 
             <div className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-widest mb-4">
-              089510403610
+              {number}
             </div>
 
             <p className="text-sm sm:text-base text-white/70 mb-6">
@@ -108,10 +108,14 @@ export default function Gift() {
             </p>
 
             <button
-              onClick={() => navigator.clipboard.writeText("123456789012")}
+              onClick={async () => {
+                await navigator.clipboard.writeText(number);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+              }}
               className="w-full py-3 sm:py-4 rounded-full bg-white text-slate-900 font-semibold hover:bg-amber-50 transition-all duration-300"
             >
-              Salin Nomor Rekening
+              {copied ? "Nomor Tersalin ✓" : "Salin Nomor Rekening"}
             </button>
           </div>
         </div>
