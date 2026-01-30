@@ -15,7 +15,7 @@ interface Person {
 
 const people: Person[] = [
   {
-    name: "A. Ikram Ramadhani",
+    name: "A. Ikram Ramdhani",
     image: "/riri2.jpeg",
     parents: "Putra Kedua dari pasangan A. Harun & Hj. Andi Mili",
     instagram: "@ikram",

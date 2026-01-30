@@ -212,7 +212,7 @@ export default function Hero(): JSX.Element {
               textShadow: "0 4px 20px rgba(0,0,0,0.45)",
             }}
           >
-            A. Ikram Ramadhani
+            A. Ikram Ramdhani
           </h1>
 
           <div className="flex items-center justify-center my-2 sm:my-3">
