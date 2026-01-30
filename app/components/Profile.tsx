@@ -18,13 +18,13 @@ const people: Person[] = [
     name: "A. Ikram Ramdhani",
     image: "/riri2.jpeg",
     parents: "Putra Kedua dari pasangan A. Harun & Hj. Andi Mili",
-    instagram: "@ikram",
+    // instagram: "@ikram",
   },
   {
     name: "Ririswati, S. Ap",
     image: "/riri6.jpeg",
     parents: "Putri Bungsu dari pasangan P. Suardi Dg. Mappuji & Hj. Suka",
-    instagram: "@ririswati",
+    // instagram: "@ririswati",
   },
 ];
 
