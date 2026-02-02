@@ -14,7 +14,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata = {
-  title: "The Wedding of Azhari & Nisa",
+  title: "The Wedding of Ikram & Riris",
   description: "Undangan Pernikahan Digital",
 };
 

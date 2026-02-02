@@ -4,8 +4,8 @@ import { JSX, Suspense, useState } from "react";
 
 import Cover from "./components/Cover";
 import Hero from "./components/Hero";
-import Couple from "./components/Couple";
-import Profile from "./components/Profile";
+import Couple from "./components/OurSpecialDay";
+import Profile from "./components/Profile"; 
 import Event from "./components/Event";
 import Gallery from "./components/Gallery";
 import Location from "./components/Location";
@@ -14,6 +14,7 @@ import Footer from "./components/Footer";
 import MusicButton from "./components/MusicButton";
 import FloatingFlowers from "./components/FloatingFlowers";
 import SmoothScroll from "./components/SmoothScroll";
+import Gift from "./components/Gift";
 
 export default function Home(): JSX.Element {
   const [opened, setOpened] = useState<boolean>(false);
@@ -28,8 +29,6 @@ export default function Home(): JSX.Element {
         </Suspense>
       )}
 
-      {opened && <FloatingFlowers />}
-
       <main
         className={`transition-all duration-[1500ms] ease-out ${
           opened ? "opacity-100 translate-y-0" : "opacity-0 translate-y-24"
@@ -39,13 +38,15 @@ export default function Home(): JSX.Element {
         <Couple />
         <Profile />
         <Event />
+        <Gift />
         <Gallery />
-        <Location />
         <RSVP />
         <Footer />
       </main>
 
-      <MusicButton />
+      {/* Music hanya muncul setelah Cover ditutup */}
+      {opened && <MusicButton autoPlay={opened} />}
     </>
   );
 }
+
