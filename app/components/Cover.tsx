@@ -100,9 +100,7 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
       ref={containerRef}
       className="fixed inset-0 z-50 flex flex-col bg-black overflow-hidden"
     >
-      {/* Floral Corner Decorations */}
       <div ref={floralsRef} className="absolute inset-0 pointer-events-none z-10">
-        {/* Top Left Floral */}
         <svg className="absolute top-2 left-2 sm:top-4 sm:left-4 lg:top-6 lg:left-6 w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-44 lg:h-44 opacity-50" viewBox="0 0 200 200" fill="none" stroke="white" strokeWidth="1.2">
           <path d="M10 80 Q 30 40, 60 30 T 100 10" strokeLinecap="round" />
           <path d="M15 90 Q 25 60, 50 50 T 90 35" strokeLinecap="round" />
@@ -126,7 +124,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
           <path d="M75 50 Q 82 43, 90 42 Q 88 52, 85 60 Q 79 54, 75 50 Z" fill="white" fillOpacity="0.15" />
         </svg>
 
-        {/* Bottom Left Floral */}
         <svg className="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 lg:bottom-6 lg:left-6 w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-44 lg:h-44 opacity-50" viewBox="0 0 200 200" fill="none" stroke="white" strokeWidth="1.2" style={{ transform: 'scaleY(-1)' }}>
           <path d="M10 80 Q 30 40, 60 30 T 100 10" strokeLinecap="round" />
           <path d="M15 90 Q 25 60, 50 50 T 90 35" strokeLinecap="round" />
@@ -138,7 +135,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
           <path d="M75 50 Q 82 43, 90 42 Q 88 52, 85 60 Q 79 54, 75 50 Z" fill="white" fillOpacity="0.15" />
         </svg>
 
-        {/* Bottom Right Floral */}
         <svg className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 lg:bottom-6 lg:right-6 w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-44 lg:h-44 opacity-50" viewBox="0 0 200 200" fill="none" stroke="white" strokeWidth="1.2" style={{ transform: 'scale(-1, -1)' }}>
           <path d="M10 80 Q 30 40, 60 30 T 100 10" strokeLinecap="round" />
           <path d="M15 90 Q 25 60, 50 50 T 90 35" strokeLinecap="round" />
@@ -151,7 +147,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
         </svg>
       </div>
 
-      {/* Main Photo Section */}
       <div 
         ref={photoRef}
         className="relative w-full h-[55vh] sm:h-[58vh] md:h-[62vh] lg:h-[65vh]"
@@ -165,13 +160,11 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
             quality={95}
             priority
           />
-          {/* Vignette effect */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/90" />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
         </div>
       </div>
 
-      {/* Content Section */}
       <div 
         ref={contentRef}
         className="relative z-20 flex-1 flex flex-col items-center justify-center text-center text-white px-6 sm:px-8 md:px-10 pb-10 sm:pb-12 md:pb-14"
@@ -179,7 +172,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
           background: 'linear-gradient(to bottom, transparent, black 20%)'
         }}
       >
-        {/* Names with Floral Divider */}
         <div className="mb-3 sm:mb-4 md:mb-5">
           <h1
             ref={namesRef}
@@ -201,7 +193,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
           </h1>
         </div>
 
-        {/* Date */}
         <p
           ref={dateRef}
           className="text-base sm:text-lg md:text-xl lg:text-2xl font-light tracking-[0.3em] mb-6 sm:mb-8 md:mb-10"
@@ -210,10 +201,8 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
           07.02.26
         </p>
 
-        {/* Divider Line */}
         <div className="w-16 sm:w-20 h-px bg-white/20 mb-6 sm:mb-8" />
 
-        {/* Guest Name */}
         <div ref={guestRef} className="mb-6 sm:mb-8 md:mb-10">
           <p className="text-xs sm:text-sm md:text-base text-white/70 mb-2 sm:mb-3 tracking-[0.15em] uppercase font-light">
             Kepada Yth.
@@ -226,7 +215,6 @@ export default function Cover({ onOpen }: CoverProps): JSX.Element {
           </p>
         </div>
 
-        {/* Open Invitation Button */}
         <button
           ref={buttonRef}
           onClick={handleOpenClick}

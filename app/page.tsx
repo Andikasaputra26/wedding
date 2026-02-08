@@ -1,6 +1,6 @@
 "use client";
 
-import { JSX, Suspense, useState } from "react";
+import { JSX, Suspense, useEffect, useState } from "react";
 
 import Cover from "./components/Cover";
 import Hero from "./components/Hero";
