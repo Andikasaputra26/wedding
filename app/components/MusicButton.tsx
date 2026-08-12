@@ -25,7 +25,6 @@ export default function MusicButton({ autoPlay }: MusicButtonProps): JSX.Element
           hasAutoPlayed.current = true;
         })
         .catch(() => {
-          // Autoplay bisa diblokir browser
         });
     }
   }, [autoPlay]);
@@ -46,9 +45,8 @@ export default function MusicButton({ autoPlay }: MusicButtonProps): JSX.Element
     <>
       <button
         onClick={toggleMusic}
-        className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-yellow-400 shadow-xl flex items-center justify-center text-xl transition ${
-          playing ? "animate-spin" : ""
-        }`}
+        className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-yellow-400 shadow-xl flex items-center justify-center text-xl transition ${playing ? "animate-spin" : ""
+          }`}
       >
         {playing ? "⏸" : "🎵"}
       </button>

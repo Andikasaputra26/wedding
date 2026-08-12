@@ -16,12 +16,9 @@ export default function Footer(): JSX.Element {
         Wassalamu&apos;alaikum Warahmatullahi Wabarakatuh
       </p>
 
-<<<<<<< HEAD
       <p className="mt-6 font-semibold">
         Keluarga Besar Risky Santoso & Anisa Putri Wardani
       </p>
-=======
-      {/* Instagram Brand */}
       <a
         href="https://instagram.com/andiiikasptra"
         target="_blank"
@@ -38,7 +35,6 @@ export default function Footer(): JSX.Element {
         </svg>
         <span className="text-sm">@andiiikasptra</span>
       </a>
->>>>>>> fc6b52253e08e228b6967ff4b0e2f24e70747692
     </footer>
   );
 }
